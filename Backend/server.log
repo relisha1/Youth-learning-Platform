@@ -1,0 +1,27 @@
+JWT_SECRET present at startup: true
+Reset users: created default admin (admin@local.test)
+Wrote dev admin token to C:\Users\ruran\Desktop\Elisha\Backend\dev_admin_token.txt
+Server listening on 5000
+=== REGISTER REQUEST ===
+Body: {
+  name: 'Fidele Rurangwa',
+  email: 'rurangwafidele@gmail.com',
+  password: 'Rurelisha',
+  role: 'student',
+  phone: '0786450786'
+}
+Creating user...
+User created: {
+  name: 'Fidele Rurangwa',
+  email: 'rurangwafidele@gmail.com',
+  role: 'student',
+  phone: '0786450786',
+  skills: [],
+  interests: [],
+  bio: '',
+  profileImage: '',
+  isActive: true,
+  id: 2
+}
+Token generated
+=== REGISTRATION SUCCESS ===

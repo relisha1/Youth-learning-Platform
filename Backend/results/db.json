@@ -1,0 +1,49 @@
+﻿{
+  "users": [
+    {
+      "name": "Local Admin",
+      "email": "admin@local.test",
+      "password": "$2a$10$LngoXzMjVKsTS9hw0iPRke7M.XhsVm.kz8qQNqpUbikpMDNRP/Zu6",
+      "role": "admin",
+      "phone": "",
+      "language": "en",
+      "skills": [],
+      "interests": [],
+      "bio": "",
+      "profileImage": "",
+      "isActive": true,
+      "id": "1",
+      "createdAt": "2025-11-15T20:34:08.456Z",
+      "updatedAt": "2025-11-15T20:34:08.456Z"
+    },
+    {
+      "name": "Fresh User",
+      "email": "fresh.user@test.local",
+      "password": "$2a$10$.z.RoaTDwmPJw0ZnLnNTxOW.XII8imBP55nB5BI.TQtXzESu0K1oe",
+      "role": "student",
+      "phone": "",
+      "skills": [],
+      "interests": [],
+      "bio": "",
+      "profileImage": "",
+      "isActive": true,
+      "id": 2
+    }
+  ],
+  "tutorials": [
+    {
+      "id": 1,
+      "title": "JavaScript Basics",
+      "description": "Learn the fundamentals of JavaScript programming",
+      "category": "Programming",
+      "content": "JavaScript is a versatile programming language that powers interactive web applications. In this tutorial, you will learn about variables, data types, functions, loops, and conditionals.",
+      "level": "beginner",
+      "duration": 120,
+      "image": ""
+    }
+  ],
+  "mentorships": [],
+  "internships": [],
+  "applications": [],
+  "progress": []
+}

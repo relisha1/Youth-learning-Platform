@@ -1,0 +1,201 @@
+{
+  "users": [
+    {
+      "name": "Local Admin",
+      "email": "admin@local.test",
+      "password": "$2a$10$re8AQGXTlgD006t5Pa.W5.uKdxVgpFo/19lKk9Ha0kHtMizyHr3IG",
+      "role": "admin",
+      "phone": "",
+      "language": "en",
+      "skills": [],
+      "interests": [],
+      "bio": "",
+      "profileImage": "",
+      "isActive": true,
+      "id": "1",
+      "createdAt": "2025-11-16T14:10:18.459Z",
+      "updatedAt": "2025-11-16T14:10:18.459Z"
+    },
+    {
+      "name": "John Student",
+      "email": "john@example.com",
+      "password": "$2a$10$re8AQGXTlgD006t5Pa.W5.uKdxVgpFo/19lKk9Ha0kHtMizyHr3IG",
+      "role": "student",
+      "phone": "+250782123456",
+      "language": "en",
+      "skills": [
+        "JavaScript",
+        "HTML"
+      ],
+      "interests": [
+        "Web Development"
+      ],
+      "bio": "Aspiring web developer",
+      "profileImage": "",
+      "isActive": true,
+      "id": "2",
+      "createdAt": "2025-11-14T10:30:00.000Z",
+      "updatedAt": "2025-11-16T14:10:18.459Z"
+    },
+    {
+      "name": "Sarah Developer",
+      "email": "sarah@example.com",
+      "password": "$2a$10$re8AQGXTlgD006t5Pa.W5.uKdxVgpFo/19lKk9Ha0kHtMizyHr3IG",
+      "role": "student",
+      "phone": "+250783456789",
+      "language": "en",
+      "skills": [
+        "React",
+        "Python",
+        "JavaScript"
+      ],
+      "interests": [
+        "Backend Development",
+        "Machine Learning"
+      ],
+      "bio": "Full stack developer learning ML",
+      "profileImage": "",
+      "isActive": true,
+      "id": "3",
+      "createdAt": "2025-11-10T09:15:00.000Z",
+      "updatedAt": "2025-11-16T14:10:18.459Z"
+    },
+    {
+      "name": "Alex Mentor",
+      "email": "alex@mentor.com",
+      "password": "$2a$10$re8AQGXTlgD006t5Pa.W5.uKdxVgpFo/19lKk9Ha0kHtMizyHr3IG",
+      "role": "mentor",
+      "phone": "+250785678901",
+      "language": "en",
+      "skills": [
+        "JavaScript",
+        "React",
+        "Node.js",
+        "Python"
+      ],
+      "interests": [
+        "Teaching",
+        "Web Development"
+      ],
+      "bio": "Senior developer and mentor at Tech Hub",
+      "profileImage": "",
+      "isActive": true,
+      "id": "4",
+      "createdAt": "2025-11-05T08:00:00.000Z",
+      "updatedAt": "2025-11-16T14:10:18.459Z"
+    },
+    {
+      "name": "Tech Company Ltd",
+      "email": "company@techcorp.com",
+      "password": "$2a$10$re8AQGXTlgD006t5Pa.W5.uKdxVgpFo/19lKk9Ha0kHtMizyHr3IG",
+      "role": "partner",
+      "phone": "+250789012345",
+      "language": "en",
+      "skills": [
+        "Hiring",
+        "Internships"
+      ],
+      "interests": [
+        "Recruiting Talent"
+      ],
+      "bio": "Technology company offering internships",
+      "profileImage": "",
+      "isActive": true,
+      "id": "5",
+      "createdAt": "2025-11-01T12:00:00.000Z",
+      "updatedAt": "2025-11-16T14:10:18.459Z"
+    },
+    {
+      "name": "Fidele Rurangwa",
+      "email": "rurangwafidele@gmail.com",
+      "password": "$2a$10$EosMZzdqlDcAai.FfD7yLO93mhCXJPpf6fITYQ9.aG.VXs8jQTmrm",
+      "role": "mentor",
+      "phone": "0786450786",
+      "skills": [],
+      "interests": [],
+      "bio": "",
+      "profileImage": "",
+      "isActive": true,
+      "id": 6
+    }
+  ],
+  "tutorials": [
+    {
+      "id": 1,
+      "title": "JavaScript Basics",
+      "description": "Learn the fundamentals of JavaScript programming",
+      "category": "Programming",
+      "content": "JavaScript is a versatile programming language that powers interactive web applications. In this tutorial, you will learn about variables, data types, functions, loops, and conditionals.",
+      "level": "beginner",
+      "duration": 120,
+      "image": ""
+    },
+    {
+      "id": 2,
+      "title": "React for Beginners",
+      "description": "Build interactive UIs with React framework",
+      "category": "Web Development",
+      "content": "React is a JavaScript library for building user interfaces with reusable components. Learn JSX, state management, hooks, and component lifecycle.",
+      "level": "intermediate",
+      "duration": 180,
+      "image": ""
+    },
+    {
+      "id": 3,
+      "title": "Python Fundamentals",
+      "description": "Master the basics of Python programming",
+      "category": "Programming",
+      "content": "Python is a versatile language used in web development, data science, and automation. Learn syntax, data structures, functions, and object-oriented programming.",
+      "level": "beginner",
+      "duration": 150,
+      "image": ""
+    },
+    {
+      "title": "Node JS Tips",
+      "description": "Short tips",
+      "category": "Programming",
+      "content": "Tips content",
+      "level": "intermediate",
+      "duration": 45,
+      "image": "",
+      "createdBy": "1",
+      "enrolled": 0,
+      "id": 4
+    }
+  ],
+  "mentorships": [],
+  "internships": [
+    {
+      "id": 1,
+      "title": "Web Developer Internship",
+      "description": "3-month web development internship",
+      "company": "Tech Company Ltd",
+      "duration": "3 months",
+      "location": "Kigali, Rwanda",
+      "salary": "$300/month",
+      "requirements": [
+        "JavaScript",
+        "React",
+        "HTML/CSS"
+      ],
+      "postedDate": "2025-11-15T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Backend Engineer Internship",
+      "description": "Learn backend development with Node.js and databases",
+      "company": "Tech Company Ltd",
+      "duration": "4 months",
+      "location": "Remote",
+      "salary": "$350/month",
+      "requirements": [
+        "Node.js",
+        "JavaScript",
+        "Database basics"
+      ],
+      "postedDate": "2025-11-14T09:30:00.000Z"
+    }
+  ],
+  "applications": [],
+  "progress": []
+}

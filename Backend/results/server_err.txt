@@ -1,0 +1,69 @@
+﻿=== REGISTRATION ERROR ===
+Error: Error: User with this email already exists
+    at User.create (C:\Users\ruran\Desktop\Elisha\Backend\models\User.js:11:15)
+    at C:\Users\ruran\Desktop\Elisha\Backend\routes\auth.js:47:29
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:175:3)
+Stack: Error: User with this email already exists
+    at User.create (C:\Users\ruran\Desktop\Elisha\Backend\models\User.js:11:15)
+    at C:\Users\ruran\Desktop\Elisha\Backend\routes\auth.js:47:29
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:175:3)
+=== REGISTRATION ERROR ===
+Error: Error: User with this email already exists
+    at User.create (C:\Users\ruran\Desktop\Elisha\Backend\models\User.js:11:15)
+    at C:\Users\ruran\Desktop\Elisha\Backend\routes\auth.js:47:29
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:175:3)
+Stack: Error: User with this email already exists
+    at User.create (C:\Users\ruran\Desktop\Elisha\Backend\models\User.js:11:15)
+    at C:\Users\ruran\Desktop\Elisha\Backend\routes\auth.js:47:29
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:175:3)
+=== REGISTRATION ERROR ===
+Error: Error: User with this email already exists
+    at User.create (C:\Users\ruran\Desktop\Elisha\Backend\models\User.js:11:15)
+    at C:\Users\ruran\Desktop\Elisha\Backend\routes\auth.js:47:29
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:175:3)
+Stack: Error: User with this email already exists
+    at User.create (C:\Users\ruran\Desktop\Elisha\Backend\models\User.js:11:15)
+    at C:\Users\ruran\Desktop\Elisha\Backend\routes\auth.js:47:29
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\ruran\Desktop\Elisha\Backend\node_modules\express\lib\router\index.js:175:3)
