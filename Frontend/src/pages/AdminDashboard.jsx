@@ -76,13 +76,17 @@ const AdminDashboard = () => {
             return;
           } catch (err2) {
             console.error('Retry after dev-token failed:', err2);
-            setLoadError(err2?.response?.data?.message || err2?.message || 'Failed to load admin data after retry');
+            let msg = err2?.response?.data?.message || err2?.message || 'Failed to load admin data after retry';
+            if (msg === 'Network Error') msg = 'Network Error: cannot reach backend at http://localhost:5000. Is the backend running?';
+            setLoadError(msg);
             return;
           }
         }
       }
 
-      setLoadError(err?.response?.data?.message || err?.message || 'Failed to load admin data');
+      let msg = err?.response?.data?.message || err?.message || 'Failed to load admin data';
+      if (msg === 'Network Error') msg = 'Network Error: cannot reach backend at http://localhost:5000. Is the backend running?';
+      setLoadError(msg);
     } finally {
       setLoading(false);
     }
@@ -183,29 +187,43 @@ const AdminDashboard = () => {
   const handleAddTutorial = async () => {
     if (!newTutorial.title || !newTutorial.description) {
       alert('Please fill all fields');
-      return;
+        return;
     }
-    try {
-      await adminAPI.createTutorial(newTutorial);
-      setNewTutorial({ title: '', description: '', category: '', level: 'beginner' });
-      loadData();
-    } catch (err) {
-      alert('Failed to add tutorial');
-    }
+      if (!newTutorial.category) {
+        alert('Please select a category');
+        return;
+      }
+      try {
+        await adminAPI.createTutorial(newTutorial);
+        setNewTutorial({ title: '', description: '', category: '', level: 'beginner' });
+        await loadData();
+        alert('Tutorial added successfully!');
+      } catch (err) {
+        const errorMsg = err?.response?.data?.message || err?.message || 'Failed to add tutorial';
+        alert('Error: ' + errorMsg);
+        console.error('Tutorial creation error:', err);
+      }
   };
 
   const handleAddInternship = async () => {
     if (!newInternship.title || !newInternship.company) {
       alert('Please fill all fields');
-      return;
+        return;
     }
-    try {
-      await adminAPI.createInternship(newInternship);
-      setNewInternship({ title: '', description: '', company: '', duration: '' });
-      loadData();
-    } catch (err) {
-      alert('Failed to add internship');
-    }
+      if (!newInternship.description) {
+        alert('Please provide a description');
+        return;
+      }
+      try {
+        await adminAPI.createInternship(newInternship);
+        setNewInternship({ title: '', description: '', company: '', duration: '' });
+        await loadData();
+        alert('Internship added successfully!');
+      } catch (err) {
+        const errorMsg = err?.response?.data?.message || err?.message || 'Failed to add internship';
+        alert('Error: ' + errorMsg);
+        console.error('Internship creation error:', err);
+      }
   };
 
   const handleUpdateApplicationStatus = async (id, newStatus) => {

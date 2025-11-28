@@ -117,6 +117,32 @@
       "profileImage": "",
       "isActive": true,
       "id": 6
+    },
+    {
+      "name": "Fidele Rurangwa",
+      "email": "rurangwafidele1@gmail.com",
+      "password": "$2a$10$sgdYny4NI3cYzcPOhVgzE.OOYnmndI7HwzjBLKX2un9lzeEAyCBwu",
+      "role": "student",
+      "phone": "0786450786",
+      "skills": [],
+      "interests": [],
+      "bio": "",
+      "profileImage": "",
+      "isActive": true,
+      "id": 7
+    },
+    {
+      "name": "Elisha Rurangwa",
+      "email": "rurangwaelisha@gmail.com",
+      "password": "$2a$10$2mUXg0G6dgJ/wpFKxjYVvuZBaaDdZSLKpF.NtnjgIw217n5ZXCCQO",
+      "role": "student",
+      "phone": "0786450786",
+      "skills": [],
+      "interests": [],
+      "bio": "",
+      "profileImage": "",
+      "isActive": true,
+      "id": 8
     }
   ],
   "tutorials": [
@@ -161,6 +187,18 @@
       "createdBy": "1",
       "enrolled": 0,
       "id": 4
+    },
+    {
+      "title": "C++",
+      "description": "introduction to C++ programming",
+      "category": "Programming",
+      "content": "",
+      "level": "beginner",
+      "duration": 0,
+      "image": "",
+      "createdBy": "1",
+      "enrolled": 0,
+      "id": 5
     }
   ],
   "mentorships": [],

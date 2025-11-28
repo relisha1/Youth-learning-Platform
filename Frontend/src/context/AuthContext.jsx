@@ -37,7 +37,10 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       return { success: true, user };
     } catch (err) {
-      const message = err?.response?.data?.message || err.message || 'Registration failed';
+      let message = err?.response?.data?.message || err.message || 'Registration failed';
+      if (message === 'Network Error') {
+        message = 'Network Error: cannot reach backend at http://localhost:5000. Is the backend server running?';
+      }
       setError(message);
       return { success: false, error: message };
     }
@@ -54,7 +57,10 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       return { success: true, user };
     } catch (err) {
-      const message = err?.response?.data?.message || 'Login failed';
+      let message = err?.response?.data?.message || err.message || 'Login failed';
+      if (message === 'Network Error') {
+        message = 'Network Error: cannot reach backend at http://localhost:5000. Is the backend server running?';
+      }
       setError(message);
       return { success: false, error: message };
     }
