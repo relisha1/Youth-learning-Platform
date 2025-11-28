@@ -53,7 +53,6 @@ npm run dev
 - The project uses JSON files for persistence so no DB server setup is required for local testing.
 - If `node` or `npm` are not found, install Node.js and restart your terminal.
 
-If you want I can add a short CONTRIBUTING or developer guide later. For now this README covers how to run the project locally.
 # Youth Learning Platform
 
 This repository contains a simple full-stack web application (Backend + Frontend) used for learning and demos.
@@ -75,49 +74,3 @@ Project layout
 
 Environment
 - Backend reads `.env` in `Backend/` for `PORT`, `JWT_SECRET`, `DB_PATH` and other config.
-
-Quick start (Windows / PowerShell)
-1. Open PowerShell and navigate to the repository root:
-
-```powershell
-cd "C:\\Users\\Elisha\\OneDrive\\Desktop\\Youth-learning-Platform"
-```
-
-2. Install dependencies for Backend and Frontend:
-
-```powershell
-cd .\\Backend
-npm install
-cd ..\\Frontend
-npm install
-```
-
-3. Start Backend (in one terminal):
-
-```powershell
-cd .\\Backend
-npm run dev
-```
-
-4. Start Frontend (in another terminal):
-
-```powershell
-cd ..\\Frontend
-npm run dev
-```
-
-5. Open the app in a browser at `http://127.0.0.1:3000` (Frontend) which talks to Backend at `http://localhost:5000`.
-
-Using `run-dev.ps1` script
-- `run-dev.ps1` exists to start both servers but the script contains local paths; edit its `$backendDir` and `$frontendDir` variables to match this repo's `Backend` and `Frontend` paths on your machine before running.
-
-Notes
-- The Backend uses a JSON file located at `Backend/data/database.json`. If you need to reset data, stop the server and replace or delete that file.
-- The `.env` in `Backend` contains a default `JWT_SECRET`. Change it for production.
-- If `node` or `npm` are not found, install Node.js from https://nodejs.org and restart PowerShell.
-
-If you want, I can:
-- Update `run-dev.ps1` to use relative repo paths so it works without editing.
-- Run the install & start commands here (if you allow me to execute them).
-
----
