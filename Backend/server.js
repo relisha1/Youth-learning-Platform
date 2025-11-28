@@ -11,12 +11,17 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const publicRoutes = require('./routes/public');
 const devRoutes = require('./routes/dev');
+const simpleAdminRoutes = require('./routes/simpleAdmin');
 const db = require('./models/database');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', '*'],
+  credentials: true
+}));
 app.use(express.json());
+app.use(express.static('public'));
 
 // --- Development: only create default admin if no users exist, don't reset ---
 if (process.env.NODE_ENV !== 'production') {
@@ -67,10 +72,53 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.get('/', (req, res) => res.json({ success: true, message: 'Youth Tech Hub API', version: '1.0.0' }));
 
+// Simple fallback HTML page if React frontend is down
+app.get('/fallback', (req, res) => {
+  res.send(`<!DOCTYPE html>
+<html>
+<head>
+  <title>Youth Tech Hub</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+    .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    h1 { color: #333; }
+    .button { display: inline-block; margin: 10px 5px 10px 0; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; font-size: 16px; }
+    .button:hover { background: #764ba2; }
+    .info { background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background: #667eea; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Youth Tech Hub</h1>
+    <p>Welcome! The React frontend may still be loading. If so, just wait and refresh.</p>
+    
+    <div class="info">
+      <h3>Quick Links:</h3>
+      <a href="http://localhost:3000" class="button">Go to Main Site (Port 3000)</a>
+      <a href="http://localhost:5000/simple-admin" class="button">View Users</a>
+      <a href="http://localhost:5000/health" class="button">API Health</a>
+    </div>
+
+    <div class="info">
+      <h3>Test Credentials:</h3>
+      <p><strong>Email:</strong> admin@local.test</p>
+      <p><strong>Password:</strong> admin1234</p>
+    </div>
+  </div>
+</body>
+</html>`);
+});
+
+app.get('/', (req, res) => res.json({ success: true, message: 'Youth Tech Hub API', version: '1.0.0' }));
+
 app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/dev', devRoutes);
+app.use('/simple-admin', simpleAdminRoutes);
 
 app.get('/health', (req, res) => res.json({ success: true, message: 'ok' }));
 
