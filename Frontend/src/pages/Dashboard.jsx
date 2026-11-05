@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { learnerAPI, publicAPI } from '../services/api';
+import { learnerAPI, publicAPI, authAPI, setUser as saveUser } from '../services/api';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -11,6 +11,23 @@ const Dashboard = () => {
   const [totalTutorials, setTotalTutorials] = useState(0);
   const [certCount, setCertCount] = useState(0);
   const [appCount, setAppCount] = useState(0);
+
+  // if the account was waiting for approval, check again in case the admin approved it
+  useEffect(() => {
+    if (user?.approved !== false) return;
+    const checkApproval = async () => {
+      try {
+        const res = await authAPI.getMe();
+        if (res.data.data.approved !== false) {
+          saveUser(res.data.data);
+          window.location.reload();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    checkApproval();
+  }, [user]);
 
   // get the numbers for the student stats
   useEffect(() => {
@@ -46,9 +63,9 @@ const Dashboard = () => {
   const getRoleDisplay = (role) => {
     const roles = {
       student: 'Student',
-      mentor: 'Mentor',
+      mentor: 'Facilitator',
       admin: 'Administrator',
-      partner: 'Internship Partner'
+      partner: 'Employer'
     };
     return roles[role] || role;
   };
@@ -71,6 +88,9 @@ const Dashboard = () => {
         <section className="welcome-section">
           <h2>Welcome back, {user?.name}! 👋</h2>
           <p className="user-role">Role: {getRoleDisplay(user?.role)}</p>
+          {user?.approved === false && (
+            <p>Your account is waiting for an admin to approve it. You can use this page after that.</p>
+          )}
         </section>
 
         {/* Quick Stats */}
@@ -150,17 +170,17 @@ const Dashboard = () => {
             {user?.role === 'mentor' && (
               <>
                 <div className="feature-box">
-                  <div className="feature-icon-large">👥</div>
-                  <h4>My Students</h4>
-                  <p>View and manage your mentees</p>
-                  <button className="btn-feature">Coming Soon</button>
+                  <div className="feature-icon-large">📝</div>
+                  <h4>Check Projects</h4>
+                  <p>Read the projects students sent. Approve them to give the certificate.</p>
+                  <button className="btn-feature" onClick={() => navigate('/facilitator')}>Open</button>
                 </div>
 
                 <div className="feature-box">
-                  <div className="feature-icon-large">📝</div>
-                  <h4>Feedback</h4>
-                  <p>Provide feedback to students</p>
-                  <button className="btn-feature">Coming Soon</button>
+                  <div className="feature-icon-large">🔎</div>
+                  <h4>Check a Certificate</h4>
+                  <p>Make sure a certificate code is real</p>
+                  <button className="btn-feature" onClick={() => navigate('/verify')}>Check</button>
                 </div>
               </>
             )}
