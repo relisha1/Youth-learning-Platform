@@ -47,6 +47,9 @@ const Jobs = () => {
           <h3>{job.title}</h3>
           <p><strong>{job.company}</strong> · {job.location} · {job.type}</p>
           <p>{job.description}</p>
+          {job.skills && <p>Skills: {job.skills}</p>}
+          {job.deadline && <p>Last day to apply: {job.deadline}</p>}
+          {job.requiresCertificate && <p>You need at least one certificate to apply.</p>}
           {user?.role === 'student' && (
             <button onClick={() => handleApply(job)}>Apply</button>
           )}
