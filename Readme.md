@@ -1,76 +1,58 @@
 # Youth Learning Platform
 
-Small full-stack learning project with a lightweight Express backend and a React frontend built with Vite.
+A web platform that helps young people in Rwanda go from learning tech skills to getting jobs.
 
-## What this code is
-- `Backend/` — Node + Express server that uses a JSON file (`Backend/data/database.json`) as its datastore. Contains routes for auth, admin, and public endpoints.
-- `Frontend/` — React app (Vite) that consumes the backend API.
+Learners follow tutorials and get a certificate with a code when they finish one. Employers
+(partners) post jobs and internships, read applications, and can check any certificate code
+to make sure it is real.
 
-This repository is intended for local development and learning — no external database is required.
+## Parts
+- `Backend/` - Node and Express server. Data is saved in a JSON file, so no database is needed.
+- `Frontend/` - React app made with Vite.
 
-## Prerequisites (on another PC)
-- Install Node.js (LTS) from https://nodejs.org (this provides `node` and `npm`).
-- A terminal (PowerShell on Windows). Git is required if you clone the repo.
+## Roles
+- **student** - does tutorials, gets certificates, applies for jobs
+- **mentor** - the facilitator (their own pages are not finished yet)
+- **partner** - the employer: posts jobs, reads applications, checks certificates
+- **admin** - manages users, tutorials and jobs at `/admin`
 
-## Quick setup (Windows / PowerShell)
-1. Clone the repository and open a terminal in the project root.
+Only student, mentor and partner can be picked when registering. Admin is made from the `.env` file.
 
-```powershell
-git clone https://github.com/<your-username>/Youth-learning-Platform.git
-cd Youth-learning-Platform
+## How to run
+
+1. Install Node.js from https://nodejs.org
+
+2. Backend:
 ```
-
-2. Install dependencies for backend and frontend:
-
-```powershell
-cd .\Backend
+cd Backend
 npm install
-cd ..\Frontend
-npm install
+cp .env.example .env
 ```
+Open `.env` and set your own `JWT_SECRET` (any long random text), `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+Then start it:
+```
+npm start
+```
+The first time it runs it makes the database file with a few sample tutorials and jobs,
+and creates the admin account from your `.env`.
 
-3. Start the backend (separate terminal):
-
-```powershell
-cd .\Backend
+3. Frontend (in a new terminal):
+```
+cd Frontend
+npm install
 npm run dev
 ```
+Open http://localhost:3000
 
-4. Start the frontend (another terminal):
-
-```powershell
-cd .\Frontend
-npm run dev
-```
-
-5. Open the frontend at `http://127.0.0.1:3000`. The frontend communicates with the backend at `http://localhost:5000` by default.
-
-## Configuration
-- Backend reads environment variables from `Backend/.env`. Default values exist in that file (including `JWT_SECRET` and `PORT`). Review before deploying to production.
-- Data is persisted in `Backend/data/database.json`.
+## Main pages
+- `/tutorials` - tutorials, press "I finished this tutorial" to get a certificate
+- `/my-certificates` - your certificates and your job applications
+- `/jobs` - open jobs, students can apply
+- `/partner` - employer page
+- `/verify` - anyone can check a certificate code
+- `/admin` - admin page
 
 ## Notes
-- The project uses JSON files for persistence so no DB server setup is required for local testing.
-- If `node` or `npm` are not found, install Node.js and restart your terminal.
-
-# Youth Learning Platform
-
-This repository contains a simple full-stack web application (Backend + Frontend) used for learning and demos.
-
-Overview
-- Backend: lightweight Express server using a JSON file as the data store (no external DB required).
-- Frontend: React app built with Vite.
-
-This README consolidates setup and run instructions for Windows (PowerShell).
-
-Prerequisites
-- Node.js (LTS) installed and available in PATH (includes `npm`).
-- A terminal (PowerShell) with permission to run scripts.
-
-Project layout
-- `Backend/` — Express server and data files
-- `Frontend/` — Vite + React app
-- `run-dev.ps1` — helper script to run both servers (update paths if needed)
-
-Environment
-- Backend reads `.env` in `Backend/` for `PORT`, `JWT_SECRET`, `DB_PATH` and other config.
+- Never upload the `.env` file or `Backend/data/database.json` (they are in `.gitignore`).
+- Right now a student can mark a tutorial as finished by clicking the button. Later this should
+  be checked by a facilitator or a quiz so the certificates mean more to employers.

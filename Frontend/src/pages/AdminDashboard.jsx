@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as adminAPI from '../services/adminAPI';
 import '../styles/AdminDashboard.css';
@@ -20,26 +20,6 @@ const AdminDashboard = () => {
   const [newTutorial, setNewTutorial] = useState({ title: '', description: '', category: '', level: 'beginner' });
   const [newInternship, setNewInternship] = useState({ title: '', description: '', company: '', duration: '' });
 
-  // Helper: fetch dev token from backend (dev-only)
-  const fetchDevToken = async () => {
-    if (!(import.meta.env && import.meta.env.DEV)) return null;
-    try {
-      const resp = await axios.get('http://localhost:5000/dev/admin-token');
-      const token = resp?.data?.data?.token;
-      const devUser = resp?.data?.data?.user || null;
-      if (token) {
-        localStorage.setItem('token', token);
-        setIsLoggedIn(true);
-        if (devUser) setUser(devUser);
-        return token;
-      }
-      return null;
-    } catch (err) {
-      console.debug('Dev token fetch failed', err?.message);
-      return null;
-    }
-  };
-
   // Helper: fetch all admin data in parallel
   const fetchAllData = async () => {
     const [statsRes, usersRes, tutorialsRes, internshipsRes, applicationsRes] = await Promise.all([
@@ -57,7 +37,6 @@ const AdminDashboard = () => {
     setApplications(applicationsRes.data.data || []);
   };
 
-  // loadData with a single retry using dev token on 401/403 (dev only)
   const loadData = async () => {
     setLoading(true);
     setLoadError('');
@@ -65,25 +44,6 @@ const AdminDashboard = () => {
       await fetchAllData();
     } catch (err) {
       console.error('Failed to load data:', err);
-      const status = err?.response?.status;
-      // If unauthorized or forbidden in dev, try to fetch a fresh dev token once and retry
-      if ((status === 401 || status === 403) && import.meta.env && import.meta.env.DEV) {
-        const token = await fetchDevToken();
-        if (token) {
-          try {
-            await fetchAllData();
-            setLoadError('');
-            return;
-          } catch (err2) {
-            console.error('Retry after dev-token failed:', err2);
-            let msg = err2?.response?.data?.message || err2?.message || 'Failed to load admin data after retry';
-            if (msg === 'Network Error') msg = 'Network Error: cannot reach backend at http://localhost:5000. Is the backend running?';
-            setLoadError(msg);
-            return;
-          }
-        }
-      }
-
       let msg = err?.response?.data?.message || err?.message || 'Failed to load admin data';
       if (msg === 'Network Error') msg = 'Network Error: cannot reach backend at http://localhost:5000. Is the backend running?';
       setLoadError(msg);
@@ -98,18 +58,6 @@ const AdminDashboard = () => {
     if (token) {
       setIsLoggedIn(true);
       loadData();
-      return;
-    }
-
-    // In development, if no token present, fetch a dev admin token from backend to make testing easier
-    if (import.meta.env && import.meta.env.DEV) {
-      (async () => {
-        const token = await fetchDevToken();
-        if (token) {
-          // small delay to allow auth header to be picked up by adminAPI
-          setTimeout(() => loadData(), 100);
-        }
-      })();
     }
   }, []);
 
@@ -123,6 +71,10 @@ const AdminDashboard = () => {
       });
 
       const { token, user: userData } = response.data.data;
+      if (userData.role !== 'admin') {
+        setLoginError('This page is for admins only');
+        return;
+      }
       localStorage.setItem('token', token);
       setUser(userData);
       setIsLoggedIn(true);
@@ -143,15 +95,6 @@ const AdminDashboard = () => {
     setInternships([]);
     setApplications([]);
     setStats(null);
-  };
-
-  const fetchDevTokenAndReload = async () => {
-    const token = await fetchDevToken();
-    if (token) {
-      await loadData();
-    } else {
-      setLoadError('Failed to fetch dev admin token');
-    }
   };
 
   const handleDeleteUser = async (id) => {
@@ -327,9 +270,6 @@ const AdminDashboard = () => {
               <div className="error-message" style={{ marginBottom: '12px' }}>
                 {loadError}
                 <button className="refresh-btn" style={{ marginLeft: '12px' }} onClick={() => loadData()}>Refresh</button>
-                {import.meta.env && import.meta.env.DEV && (
-                  <button className="refresh-btn" style={{ marginLeft: '12px' }} onClick={() => fetchDevTokenAndReload()}>Use Dev Admin Token</button>
-                )}
               </div>
             )}
 

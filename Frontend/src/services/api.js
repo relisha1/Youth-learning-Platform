@@ -33,6 +33,30 @@ export const authAPI = {
   changePassword: (passwords) => api.put('/auth/change-password', passwords),
 };
 
+export const learnerAPI = {
+  getProgress: () => api.get('/learner/progress'),
+  complete: (tutorialId) => api.post(`/learner/complete/${tutorialId}`),
+  getCertificates: () => api.get('/learner/certificates'),
+  apply: (jobId, message) => api.post(`/learner/apply/${jobId}`, { message }),
+  getApplications: () => api.get('/learner/applications'),
+};
+
+export const partnerAPI = {
+  getJobs: () => api.get('/partner/jobs'),
+  postJob: (job) => api.post('/partner/jobs', job),
+  updateJob: (id, updates) => api.put(`/partner/jobs/${id}`, updates),
+  deleteJob: (id) => api.delete(`/partner/jobs/${id}`),
+  getApplicants: (id) => api.get(`/partner/jobs/${id}/applicants`),
+  setStatus: (appId, status) => api.put(`/partner/applications/${appId}`, { status }),
+  getLearners: () => api.get('/partner/learners'),
+};
+
+export const publicAPI = {
+  getTutorials: () => api.get('/public/tutorials'),
+  getJobs: () => api.get('/public/internships'),
+  verify: (code) => api.get(`/public/verify/${code}`),
+};
+
 export const setAuthToken = (token) => localStorage.setItem('token', token);
 export const setUser = (user) => localStorage.setItem('user', JSON.stringify(user));
 export const getUser = () => {

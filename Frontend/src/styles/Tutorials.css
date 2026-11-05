@@ -237,3 +237,11 @@
   margin-bottom: 20px;
   border-left: 4px solid #c33;
 }
+
+.success-message {
+  background: #e6f7ea;
+  color: #1e6b32;
+  padding: 10px;
+  margin: 10px 20px;
+  border-radius: 4px;
+}
