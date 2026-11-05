@@ -10,30 +10,40 @@ const Tutorials = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTutorial, setSelectedTutorial] = useState(null);
-  const [finishedIds, setFinishedIds] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
   const [message, setMessage] = useState('');
+  const [projectLink, setProjectLink] = useState('');
+  const [notes, setNotes] = useState('');
 
   useEffect(() => {
     fetchTutorials();
-    loadProgress();
+    loadSubmissions();
   }, []);
 
-  // which tutorials did this user already finish
-  const loadProgress = async () => {
+  // the projects this student already sent
+  const loadSubmissions = async () => {
     try {
-      const res = await learnerAPI.getProgress();
-      setFinishedIds(res.data.data.map(p => p.tutorialId));
+      const res = await learnerAPI.getSubmissions();
+      setSubmissions(res.data.data);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleFinish = async (tutorial) => {
+  // latest submission for a tutorial (or nothing)
+  const getSubmission = (tutorialId) => {
+    const list = submissions.filter(s => s.tutorialId === tutorialId);
+    return list[list.length - 1];
+  };
+
+  const handleSubmit = async (tutorial) => {
     try {
-      const res = await learnerAPI.complete(tutorial.id);
-      setFinishedIds([...finishedIds, tutorial.id]);
-      setMessage('Well done! Your certificate code is ' + res.data.data.code);
+      await learnerAPI.submit(tutorial.id, projectLink, notes);
+      setMessage('Your project was sent. The facilitator will check it and you will get your certificate if it is approved.');
+      setProjectLink('');
+      setNotes('');
       setSelectedTutorial(null);
+      loadSubmissions();
     } catch (err) {
       setMessage(err.response?.data?.message || 'Something went wrong');
     }
@@ -80,7 +90,7 @@ const Tutorials = () => {
             {tutorials.map(tutorial => (
               <div key={tutorial.id} className="tutorial-card">
                 <div className="tutorial-level">{tutorial.level}</div>
-                {finishedIds.includes(tutorial.id) && <p>✅ Finished</p>}
+                {getSubmission(tutorial.id) && <p>Project: {getSubmission(tutorial.id).status}</p>}
                 <h3>{tutorial.title}</h3>
                 <p className="tutorial-category">{tutorial.category}</p>
                 <p className="tutorial-description">{tutorial.description}</p>
@@ -114,13 +124,39 @@ const Tutorials = () => {
               <h3>Course Content</h3>
               <p>{selectedTutorial.content}</p>
             </div>
-            {finishedIds.includes(selectedTutorial.id) ? (
-              <p>✅ You finished this tutorial</p>
-            ) : (
-              <button className="btn-enroll" onClick={() => handleFinish(selectedTutorial)}>
-                I finished this tutorial
-              </button>
-            )}
+            <div className="content">
+              <h3>Your project</h3>
+              <p>{selectedTutorial.projectBrief}</p>
+            </div>
+            {(() => {
+              const last = getSubmission(selectedTutorial.id);
+              if (last && last.status === 'approved') {
+                return <p>✅ Your project was approved. Check My Certificates.</p>;
+              }
+              if (last && last.status === 'pending') {
+                return <p>⏳ Your project is waiting for the facilitator.</p>;
+              }
+              return (
+                <div>
+                  {last && last.status === 'rejected' && (
+                    <p>❌ The facilitator asked for changes: {last.feedback}</p>
+                  )}
+                  <input
+                    placeholder="Link to your project (GitHub)"
+                    value={projectLink}
+                    onChange={(e) => setProjectLink(e.target.value)}
+                  />
+                  <textarea
+                    placeholder="Notes for the facilitator (optional)"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                  />
+                  <button className="btn-enroll" onClick={() => handleSubmit(selectedTutorial)}>
+                    Send project
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

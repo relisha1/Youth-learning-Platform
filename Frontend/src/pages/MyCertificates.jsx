@@ -8,12 +8,15 @@ const MyCertificates = () => {
   const navigate = useNavigate();
   const [certificates, setCertificates] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const certRes = await learnerAPI.getCertificates();
         const appRes = await learnerAPI.getApplications();
+        const subRes = await learnerAPI.getSubmissions();
+        setSubmissions(subRes.data.data);
         setCertificates(certRes.data.data);
         setApplications(appRes.data.data);
       } catch (err) {
@@ -29,12 +32,22 @@ const MyCertificates = () => {
       <h1>My Certificates</h1>
       <p>Give the code to an employer. They can check it on the Verify page.</p>
 
-      {certificates.length === 0 && <p>You have no certificates yet. Finish a tutorial to get one.</p>}
+      {certificates.length === 0 && <p>You have no certificates yet. Send a project and the facilitator will check it.</p>}
       {certificates.map(c => (
         <div className="simple-card" key={c.id}>
           <h3>{c.tutorialTitle}</h3>
           <p>Code: <strong>{c.code}</strong></p>
           <p>Date: {new Date(c.issuedAt).toLocaleDateString()}</p>
+          {c.issuedBy && <p>Given by facilitator {c.issuedBy}</p>}
+        </div>
+      ))}
+
+      <h2>My Projects</h2>
+      {submissions.length === 0 && <p>You have not sent any project yet.</p>}
+      {submissions.map(s => (
+        <div className="simple-card" key={s.id}>
+          <h3>{s.tutorialTitle} ({s.status})</h3>
+          {s.feedback && <p>Facilitator says: {s.feedback}</p>}
         </div>
       ))}
 

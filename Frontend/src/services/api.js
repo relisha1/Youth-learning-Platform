@@ -35,13 +35,21 @@ export const authAPI = {
 
 export const learnerAPI = {
   getProgress: () => api.get('/learner/progress'),
-  complete: (tutorialId) => api.post(`/learner/complete/${tutorialId}`),
+  submit: (tutorialId, projectLink, notes) => api.post(`/learner/submit/${tutorialId}`, { projectLink, notes }),
+  getSubmissions: () => api.get('/learner/submissions'),
   getCertificates: () => api.get('/learner/certificates'),
   apply: (jobId, message) => api.post(`/learner/apply/${jobId}`, { message }),
   getApplications: () => api.get('/learner/applications'),
 };
 
+export const mentorAPI = {
+  getSubmissions: (status) => api.get('/mentor/submissions', { params: { status } }),
+  review: (id, status, feedback) => api.put(`/mentor/submissions/${id}`, { status, feedback }),
+};
+
 export const partnerAPI = {
+  getProfile: () => api.get('/partner/profile'),
+  saveProfile: (profile) => api.put('/partner/profile', profile),
   getJobs: () => api.get('/partner/jobs'),
   postJob: (job) => api.post('/partner/jobs', job),
   updateJob: (id, updates) => api.put(`/partner/jobs/${id}`, updates),
