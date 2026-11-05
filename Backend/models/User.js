@@ -55,15 +55,8 @@ class User {
 
   // Verify password
   static async verifyPassword(plainPassword, hashedPassword) {
-    // For local development we allow plain-text stored passwords so beginners
-    // can inspect and set simple values without needing to generate bcrypt hashes.
-    // In production this branch is not used; stored passwords should always be bcrypt hashes.
     try {
       if (!hashedPassword || typeof hashedPassword !== 'string') return false;
-      // bcrypt hashes usually start with $2a$ or $2b$ etc.
-      if (process.env.NODE_ENV !== 'production' && !hashedPassword.startsWith('$2')) {
-        return plainPassword === hashedPassword;
-      }
       return await bcrypt.compare(plainPassword, hashedPassword);
     } catch (err) {
       return false;

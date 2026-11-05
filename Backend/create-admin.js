@@ -1,33 +1,21 @@
-const bcrypt = require('bcryptjs');
-const db = require('./models/database');
+// run with: ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=something node create-admin.js
 const User = require('./models/User');
 
-// Create admin user
 async function createAdminUser() {
-  try {
-    console.log('Creating admin user...');
-    
-    const adminUser = await User.create({
-      name: 'Admin User',
-      email: 'admin@youthtech.com',
-      password: 'Admin@123456', // Change this password!
-      role: 'admin',
-      phone: '+250780000000',
-      language: 'en'
-    });
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
 
-    console.log('✅ Admin user created successfully!');
-    console.log('\n📋 Admin Credentials:');
-    console.log('========================');
-    console.log('Email: admin@youthtech.com');
-    console.log('Password: Admin@123456');
-    console.log('========================');
-    console.log('\n🔐 User Details:');
-    console.log(JSON.stringify(adminUser, null, 2));
-    console.log('\n⚠️  IMPORTANT: Change the password after first login!');
+  if (!email || !password) {
+    console.log('Set ADMIN_EMAIL and ADMIN_PASSWORD first.');
+    process.exit(1);
+  }
+
+  try {
+    await User.create({ name: 'Admin', email, password, role: 'admin', language: 'en' });
+    console.log('Admin created for', email);
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error creating admin user:', error.message);
+    console.log('Could not create admin:', error.message);
     process.exit(1);
   }
 }

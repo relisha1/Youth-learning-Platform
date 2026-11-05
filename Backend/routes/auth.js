@@ -10,8 +10,6 @@ const router = express.Router();
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
-  console.log('=== REGISTER REQUEST ===');
-  console.log('Body:', req.body);
   const { name, email, password, role, phone, language } = req.body;
 
     // Validate input
@@ -42,7 +40,15 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    console.log('Creating user...');
+    // people can only sign up as these roles (admin is made by us)
+    const allowedRoles = ['student', 'mentor', 'partner'];
+    if (role && !allowedRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Role must be student, mentor or partner'
+      });
+    }
+
     // Create user
     const user = await User.create({
       name,
@@ -53,7 +59,6 @@ router.post('/register', async (req, res) => {
       language: language || 'en'
     });
 
-    console.log('User created:', user);
 
     // Generate JWT token (ensure secret is present)
     const jwtSecret = process.env.JWT_SECRET;

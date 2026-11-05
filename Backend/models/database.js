@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
+// all the tables the app uses
+const TABLES = ['users', 'tutorials', 'mentorships', 'internships', 'applications', 'progress', 'certificates'];
+
 class Database {
   constructor(dbPath) {
     this.dbPath = dbPath;
@@ -14,23 +17,28 @@ class Database {
     }
 
     if (!fs.existsSync(this.dbPath)) {
-      const initialData = {
-        users: [],
-        tutorials: [],
-        mentorships: [],
-        internships: [],
-        applications: [],
-        progress: []
-      };
+      // start from the sample tutorials and internships if the file is there
+      const samplePath = path.join(__dirname, '../data/sample-data.json');
+      let initialData = {};
+      if (fs.existsSync(samplePath)) {
+        initialData = JSON.parse(fs.readFileSync(samplePath, 'utf8'));
+      }
+      TABLES.forEach(table => {
+        if (!initialData[table]) initialData[table] = [];
+      });
       this.writeData(initialData);
-      console.log('Database initialized at', this.dbPath);
+      console.log('Database created at', this.dbPath);
     }
   }
 
   readData() {
     try {
-      const data = fs.readFileSync(this.dbPath, 'utf8');
-      return JSON.parse(data);
+      const data = JSON.parse(fs.readFileSync(this.dbPath, 'utf8'));
+      // old data files may not have every table yet
+      TABLES.forEach(table => {
+        if (!data[table]) data[table] = [];
+      });
+      return data;
     } catch (error) {
       console.error('Error reading database:', error);
       return null;
@@ -52,10 +60,11 @@ class Database {
     return data ? data[table] : [];
   }
 
+  // ids can be numbers or strings, so compare them as text
   findById(table, id) {
     const data = this.readData();
     if (!data) return null;
-    return data[table].find(item => item.id === id);
+    return data[table].find(item => String(item.id) === String(id));
   }
 
   findOne(table, criteria) {
@@ -83,6 +92,9 @@ class Database {
       record.id = maxId + 1;
     }
 
+    // the date fields are filled in here so every record has them
+    if (!record.createdAt) record.createdAt = new Date().toISOString();
+
     data[table].push(record);
     this.writeData(data);
     return record;
@@ -92,7 +104,7 @@ class Database {
     const data = this.readData();
     if (!data) return null;
 
-    const item = data[table].find(i => i.id === id);
+    const item = data[table].find(i => String(i.id) === String(id));
     if (!item) return null;
 
     Object.assign(item, updates);
@@ -104,7 +116,7 @@ class Database {
     const data = this.readData();
     if (!data) return false;
 
-    const index = data[table].findIndex(i => i.id === id);
+    const index = data[table].findIndex(i => String(i.id) === String(id));
     if (index === -1) return false;
 
     data[table].splice(index, 1);
@@ -126,7 +138,9 @@ class Database {
   }
 }
 
-const dbPath = path.join(__dirname, '../data/database.json');
+const dbPath = process.env.DB_PATH
+  ? path.resolve(process.env.DB_PATH)
+  : path.join(__dirname, '../data/database.json');
 const db = new Database(dbPath);
 
 module.exports = db;
