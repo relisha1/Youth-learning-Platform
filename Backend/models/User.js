@@ -25,7 +25,9 @@ class User {
         interests: userData.interests || [],
         bio: userData.bio || '',
         profileImage: userData.profileImage || '',
-        isActive: true
+        isActive: true,
+        // mentors and partners must be approved by an admin first
+        approved: userData.role === 'mentor' || userData.role === 'partner' ? false : true
       };
 
       // Insert into database

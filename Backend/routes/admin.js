@@ -95,6 +95,19 @@ router.delete('/users/:id', (req, res) => {
   }
 });
 
+// @route   PUT /api/admin/users/:id/approve
+// @desc    Approve (or un-approve) a mentor or partner
+// @access  Private (Admin only)
+router.put('/users/:id/approve', (req, res) => {
+  const user = db.findById('users', req.params.id);
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
+  }
+  const approved = req.body.approved !== false;
+  db.update('users', user.id, { approved });
+  res.json({ success: true, message: approved ? 'User approved' : 'Approval removed' });
+});
+
 // @route   PUT /api/admin/users/:id/role
 // @desc    Update user role
 // @access  Private (Admin only)

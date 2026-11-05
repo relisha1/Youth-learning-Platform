@@ -13,6 +13,8 @@ export const getUser = (id) => axios.get(`${API_URL}/admin/users/${id}`, { heade
 export const deleteUser = (id) => axios.delete(`${API_URL}/admin/users/${id}`, { headers: { ...authHeader() } });
 export const updateUserRole = (id, role) => axios.put(`${API_URL}/admin/users/${id}/role`, { role }, { headers: { ...authHeader() } });
 
+export const approveUser = (id, approved) => axios.put(`${API_URL}/admin/users/${id}/approve`, { approved }, { headers: { ...authHeader() } });
+
 export const getTutorials = () => axios.get(`${API_URL}/admin/tutorials`, { headers: { ...authHeader() } });
 export const createTutorial = (data) => axios.post(`${API_URL}/admin/tutorials`, data, { headers: { ...authHeader() } });
 export const updateTutorial = (id, data) => axios.put(`${API_URL}/admin/tutorials/${id}`, data, { headers: { ...authHeader() } });

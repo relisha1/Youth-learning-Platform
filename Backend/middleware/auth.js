@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const db = require('../models/database');
 
 // check the token and put the user info on req.user
 const authMiddleware = (req, res, next) => {
@@ -23,9 +24,18 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
+// mentors and partners can only work after an admin approved them
+const isApproved = (userId) => {
+  const user = db.findById('users', userId);
+  return user && user.approved !== false;
+};
+
 const isMentor = (req, res, next) => {
   if (req.user.role !== 'mentor' && req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Access denied. Mentor only.' });
+  }
+  if (req.user.role === 'mentor' && !isApproved(req.user.id)) {
+    return res.status(403).json({ success: false, message: 'Your account is waiting for admin approval.' });
   }
   next();
 };
@@ -34,6 +44,9 @@ const isMentor = (req, res, next) => {
 const isPartner = (req, res, next) => {
   if (req.user.role !== 'partner' && req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Access denied. Partner only.' });
+  }
+  if (req.user.role === 'partner' && !isApproved(req.user.id)) {
+    return res.status(403).json({ success: false, message: 'Your account is waiting for admin approval.' });
   }
   next();
 };

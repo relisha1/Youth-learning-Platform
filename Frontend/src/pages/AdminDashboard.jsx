@@ -97,6 +97,15 @@ const AdminDashboard = () => {
     setStats(null);
   };
 
+  const handleApprove = async (user) => {
+    try {
+      await adminAPI.approveUser(user.id, user.approved === false);
+      loadData();
+    } catch (err) {
+      alert('Could not change approval');
+    }
+  };
+
   const handleDeleteUser = async (id) => {
     if (!window.confirm('Delete this user?')) return;
     try {
@@ -292,9 +301,14 @@ const AdminDashboard = () => {
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td><span className={`role-badge ${user.role || ''}`}>{(user.role || '').toUpperCase()}</span></td>
-                      <td><span className={`status ${user.isActive ? 'active' : 'inactive'}`}>{user.isActive ? 'Active' : 'Inactive'}</span></td>
+                      <td><span className={`status ${user.isActive ? 'active' : 'inactive'}`}>{user.isActive ? 'Active' : 'Inactive'}</span>{user.approved === false && ' (waiting for approval)'}</td>
                       <td>
                         <div className="actions">
+                          {(user.role === 'mentor' || user.role === 'partner') && (
+                            <button className="refresh-btn" onClick={() => handleApprove(user)}>
+                              {user.approved === false ? 'Approve' : 'Remove approval'}
+                            </button>
+                          )}
                           <button className="delete-btn" onClick={() => handleDeleteUser(user.id)}>Delete</button>
                         </div>
                       </td>
