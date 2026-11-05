@@ -1,0 +1,99 @@
+{
+  "users": [],
+  "tutorials": [
+    {
+      "id": 1,
+      "title": "JavaScript Basics",
+      "description": "Learn the fundamentals of JavaScript programming",
+      "category": "Programming",
+      "content": "JavaScript is a versatile programming language that powers interactive web applications. In this tutorial, you will learn about variables, data types, functions, loops, and conditionals.",
+      "level": "beginner",
+      "duration": 120,
+      "image": ""
+    },
+    {
+      "id": 2,
+      "title": "React for Beginners",
+      "description": "Build interactive UIs with React framework",
+      "category": "Web Development",
+      "content": "React is a JavaScript library for building user interfaces with reusable components. Learn JSX, state management, hooks, and component lifecycle.",
+      "level": "intermediate",
+      "duration": 180,
+      "image": ""
+    },
+    {
+      "id": 3,
+      "title": "Python Fundamentals",
+      "description": "Master the basics of Python programming",
+      "category": "Programming",
+      "content": "Python is a versatile language used in web development, data science, and automation. Learn syntax, data structures, functions, and object-oriented programming.",
+      "level": "beginner",
+      "duration": 150,
+      "image": ""
+    },
+    {
+      "title": "Node JS Tips",
+      "description": "Short tips",
+      "category": "Programming",
+      "content": "Tips content",
+      "level": "intermediate",
+      "duration": 45,
+      "image": "",
+      "createdBy": "1",
+      "enrolled": 0,
+      "id": 4
+    },
+    {
+      "title": "C++",
+      "description": "introduction to C++ programming",
+      "category": "Programming",
+      "content": "",
+      "level": "beginner",
+      "duration": 0,
+      "image": "",
+      "createdBy": "1",
+      "enrolled": 0,
+      "id": 5
+    }
+  ],
+  "mentorships": [],
+  "internships": [
+    {
+      "id": 1,
+      "title": "Web Developer Internship",
+      "description": "3-month web development internship",
+      "company": "Tech Company Ltd",
+      "duration": "3 months",
+      "location": "Kigali, Rwanda",
+      "salary": "$300/month",
+      "requirements": [
+        "JavaScript",
+        "React",
+        "HTML/CSS"
+      ],
+      "postedDate": "2025-11-15T10:00:00.000Z",
+      "status": "open",
+      "applicants": 0
+    },
+    {
+      "id": 2,
+      "title": "Backend Engineer Internship",
+      "description": "Learn backend development with Node.js and databases",
+      "company": "Tech Company Ltd",
+      "duration": "4 months",
+      "location": "Remote",
+      "salary": "$350/month",
+      "requirements": [
+        "Node.js",
+        "JavaScript",
+        "Database basics"
+      ],
+      "postedDate": "2025-11-14T09:30:00.000Z",
+      "status": "open",
+      "applicants": 0
+    }
+  ],
+  "applications": [],
+  "progress": [],
+  "certificates": []
+}

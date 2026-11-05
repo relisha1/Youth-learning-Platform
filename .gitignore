@@ -1,0 +1,12 @@
+node_modules/
+.env
+*.log
+*.err
+dist/
+
+# local data and dev files
+Backend/data/database.json
+Backend/data/database.json.bak
+Backend/results/
+Backend/dev_admin_token.txt
+Backend/hash.txt
