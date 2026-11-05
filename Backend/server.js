@@ -12,8 +12,8 @@ const learnerRoutes = require('./routes/learner');
 const partnerRoutes = require('./routes/partner');
 const db = require('./models/database');
 
-if (!process.env.JWT_SECRET) {
-  console.error('JWT_SECRET is missing. Copy .env.example to .env and set a value.');
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || process.env.JWT_SECRET.startsWith('change')) {
+  console.error('JWT_SECRET is missing or too weak. Run "npm run secret" and put the result in your .env file.');
   process.exit(1);
 }
 

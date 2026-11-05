@@ -28,7 +28,8 @@ cd Backend
 npm install
 cp .env.example .env
 ```
-Open `.env` and set your own `JWT_SECRET` (any long random text), `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+Run `npm run secret` to make a new random secret. Open `.env`, paste it as `JWT_SECRET`, and set your own `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+The server will not start if the secret is missing or too short.
 Then start it:
 ```
 npm start
