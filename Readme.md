@@ -11,12 +11,20 @@ to make sure it is real.
 - `Frontend/` - React app made with Vite.
 
 ## Roles
-- **student** - does tutorials, gets certificates, applies for jobs
-- **mentor** - the facilitator (their own pages are not finished yet)
-- **partner** - the employer: posts jobs, reads applications, checks certificates
+- **student** - does tutorials, sends a project, gets a certificate, applies for jobs
+- **mentor** - the facilitator: checks the projects students send and approves them
+- **partner** - the employer: saves company info, posts jobs, reads applications, checks certificates
 - **admin** - manages users, tutorials and jobs at `/admin`
 
 Only student, mentor and partner can be picked when registering. Admin is made from the `.env` file.
+Mentors and partners cannot use their pages until an admin approves them (Users tab in `/admin`).
+
+## How a certificate is given
+1. The student opens a tutorial and does the project written there.
+2. The student sends the link to the project.
+3. The facilitator opens the link and checks it. If it is good they press Approve, and the certificate is made.
+4. If it is not good, the facilitator writes what to fix and sends it back. The student can send it again.
+5. An employer can type the certificate code on `/verify` to see that it is real and who gave it.
 
 ## How to run
 
@@ -46,14 +54,14 @@ npm run dev
 Open http://localhost:3000
 
 ## Main pages
-- `/tutorials` - tutorials, press "I finished this tutorial" to get a certificate
-- `/my-certificates` - your certificates and your job applications
+- `/tutorials` - tutorials and the project for each one
+- `/my-certificates` - your certificates, projects and job applications
 - `/jobs` - open jobs, students can apply
+- `/facilitator` - facilitator page to check projects
 - `/partner` - employer page
 - `/verify` - anyone can check a certificate code
 - `/admin` - admin page
 
 ## Notes
 - Never upload the `.env` file or `Backend/data/database.json` (they are in `.gitignore`).
-- Right now a student can mark a tutorial as finished by clicking the button. Later this should
-  be checked by a facilitator or a quiz so the certificates mean more to employers.
+- Change `JWT_SECRET` if it was ever shown or shared. `npm run secret` makes a new one. After changing it everyone has to log in again.
