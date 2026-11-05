@@ -1,0 +1,130 @@
+const express = require('express');
+const db = require('../models/database');
+const { authMiddleware, isPartner } = require('../middleware/auth');
+
+const router = express.Router();
+
+// only employers (partners) and admins can use these
+router.use(authMiddleware, isPartner);
+
+// check that this job belongs to the logged in partner
+function getMyJob(req) {
+  const job = db.findById('internships', req.params.id);
+  if (!job) return null;
+  if (req.user.role !== 'admin' && String(job.postedBy) !== String(req.user.id)) return null;
+  return job;
+}
+
+// GET /api/partner/jobs - jobs I posted
+router.get('/jobs', (req, res) => {
+  const jobs = db.findMany('internships', { postedBy: req.user.id });
+  res.json({ success: true, data: jobs });
+});
+
+// POST /api/partner/jobs - post a new job
+router.post('/jobs', (req, res) => {
+  const { title, company, description, location, type } = req.body;
+
+  if (!title || !company || !description) {
+    return res.status(400).json({
+      success: false,
+      message: 'Title, company and description are required'
+    });
+  }
+
+  const job = db.insert('internships', {
+    title,
+    company,
+    description,
+    location: location || 'Kigali',
+    type: type || 'internship',
+    status: 'open',
+    applicants: 0,
+    postedBy: req.user.id
+  });
+
+  res.status(201).json({ success: true, message: 'Job posted', data: job });
+});
+
+// PUT /api/partner/jobs/:id - change a job or close it
+router.put('/jobs/:id', (req, res) => {
+  const job = getMyJob(req);
+  if (!job) {
+    return res.status(404).json({ success: false, message: 'Job not found' });
+  }
+
+  // only these fields can be changed
+  const updates = {};
+  ['title', 'company', 'description', 'location', 'type', 'status'].forEach(field => {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
+  });
+
+  const updated = db.update('internships', job.id, updates);
+  res.json({ success: true, message: 'Job updated', data: updated });
+});
+
+// DELETE /api/partner/jobs/:id
+router.delete('/jobs/:id', (req, res) => {
+  const job = getMyJob(req);
+  if (!job) {
+    return res.status(404).json({ success: false, message: 'Job not found' });
+  }
+  db.delete('internships', job.id);
+  res.json({ success: true, message: 'Job deleted' });
+});
+
+// GET /api/partner/jobs/:id/applicants - people who applied, with their certificates
+router.get('/jobs/:id/applicants', (req, res) => {
+  const job = getMyJob(req);
+  if (!job) {
+    return res.status(404).json({ success: false, message: 'Job not found' });
+  }
+
+  const applications = db.findMany('applications', { internshipId: job.id });
+  const list = applications.map(a => {
+    const certificates = db.findMany('certificates', { userId: a.userId });
+    return { ...a, certificates };
+  });
+
+  res.json({ success: true, data: list });
+});
+
+// PUT /api/partner/applications/:id - accept or reject an applicant
+router.put('/applications/:id', (req, res) => {
+  const { status } = req.body;
+  const allowed = ['pending', 'accepted', 'rejected'];
+  if (!allowed.includes(status)) {
+    return res.status(400).json({ success: false, message: 'Status must be pending, accepted or rejected' });
+  }
+
+  const application = db.findById('applications', req.params.id);
+  if (!application) {
+    return res.status(404).json({ success: false, message: 'Application not found' });
+  }
+
+  // the job must be one of mine
+  const job = db.findById('internships', application.internshipId);
+  if (!job || (req.user.role !== 'admin' && String(job.postedBy) !== String(req.user.id))) {
+    return res.status(403).json({ success: false, message: 'This is not your job' });
+  }
+
+  const updated = db.update('applications', application.id, { status });
+  res.json({ success: true, message: 'Application updated', data: updated });
+});
+
+// GET /api/partner/learners - learners who have certificates (the talent list)
+router.get('/learners', (req, res) => {
+  const certificates = db.getAll('certificates');
+  const learners = {};
+
+  certificates.forEach(c => {
+    if (!learners[c.userId]) {
+      learners[c.userId] = { id: c.userId, name: c.learnerName, certificates: [] };
+    }
+    learners[c.userId].certificates.push({ code: c.code, tutorialTitle: c.tutorialTitle, issuedAt: c.issuedAt });
+  });
+
+  res.json({ success: true, data: Object.values(learners) });
+});
+
+module.exports = router;

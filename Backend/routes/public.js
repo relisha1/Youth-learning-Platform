@@ -27,7 +27,7 @@ router.get('/tutorials', (req, res) => {
 // @access  Public
 router.get('/tutorials/:id', (req, res) => {
   try {
-    const tutorial = db.findById('tutorials', Number(req.params.id));
+    const tutorial = db.findById('tutorials', req.params.id);
     if (!tutorial) {
       return res.status(404).json({
         success: false,
@@ -70,7 +70,7 @@ router.get('/internships', (req, res) => {
 // @access  Public
 router.get('/internships/:id', (req, res) => {
   try {
-    const internship = db.findById('internships', Number(req.params.id));
+    const internship = db.findById('internships', req.params.id);
     if (!internship) {
       return res.status(404).json({
         success: false,
@@ -110,6 +110,25 @@ router.get('/stats', (req, res) => {
       message: error.message
     });
   }
+});
+
+// @route   GET /api/public/verify/:code
+// @desc    Check if a certificate code is real (employers use this)
+// @access  Public
+router.get('/verify/:code', (req, res) => {
+  const certificate = db.findOne('certificates', { code: req.params.code.toUpperCase() });
+  if (!certificate) {
+    return res.status(404).json({ success: false, message: 'Certificate not found' });
+  }
+  res.json({
+    success: true,
+    data: {
+      code: certificate.code,
+      learnerName: certificate.learnerName,
+      tutorialTitle: certificate.tutorialTitle,
+      issuedAt: certificate.issuedAt
+    }
+  });
 });
 
 module.exports = router;
