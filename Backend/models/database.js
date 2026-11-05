@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // all the tables the app uses
-const TABLES = ['users', 'tutorials', 'mentorships', 'internships', 'applications', 'progress', 'certificates'];
+const TABLES = ['users', 'tutorials', 'mentorships', 'internships', 'applications', 'progress', 'certificates', 'submissions'];
 
 class Database {
   constructor(dbPath) {

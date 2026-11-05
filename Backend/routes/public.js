@@ -126,6 +126,7 @@ router.get('/verify/:code', (req, res) => {
       code: certificate.code,
       learnerName: certificate.learnerName,
       tutorialTitle: certificate.tutorialTitle,
+      issuedBy: certificate.issuedBy || '',
       issuedAt: certificate.issuedAt
     }
   });

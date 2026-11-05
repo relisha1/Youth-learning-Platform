@@ -9,7 +9,8 @@
       "content": "JavaScript is a versatile programming language that powers interactive web applications. In this tutorial, you will learn about variables, data types, functions, loops, and conditionals.",
       "level": "beginner",
       "duration": 120,
-      "image": ""
+      "image": "",
+      "projectBrief": "Build a small page with a tip calculator using only JavaScript. Put it on GitHub and send the link."
     },
     {
       "id": 2,
@@ -19,7 +20,8 @@
       "content": "React is a JavaScript library for building user interfaces with reusable components. Learn JSX, state management, hooks, and component lifecycle.",
       "level": "intermediate",
       "duration": 180,
-      "image": ""
+      "image": "",
+      "projectBrief": "Build a to-do list in React where you can add and remove items. Put it on GitHub and send the link."
     },
     {
       "id": 3,
@@ -29,7 +31,8 @@
       "content": "Python is a versatile language used in web development, data science, and automation. Learn syntax, data structures, functions, and object-oriented programming.",
       "level": "beginner",
       "duration": 150,
-      "image": ""
+      "image": "",
+      "projectBrief": "Write a Python program that reads a list of marks and prints the average, highest and lowest. Put it on GitHub and send the link."
     },
     {
       "title": "Node JS Tips",
@@ -41,7 +44,8 @@
       "image": "",
       "createdBy": "1",
       "enrolled": 0,
-      "id": 4
+      "id": 4,
+      "projectBrief": "Make a small project that uses what you learned in this tutorial. Put it on GitHub and send the link."
     },
     {
       "title": "C++",
@@ -53,7 +57,8 @@
       "image": "",
       "createdBy": "1",
       "enrolled": 0,
-      "id": 5
+      "id": 5,
+      "projectBrief": "Make a small project that uses what you learned in this tutorial. Put it on GitHub and send the link."
     }
   ],
   "mentorships": [],
@@ -95,5 +100,6 @@
   ],
   "applications": [],
   "progress": [],
-  "certificates": []
+  "certificates": [],
+  "submissions": []
 }

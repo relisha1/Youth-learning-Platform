@@ -7,49 +7,53 @@ const router = express.Router();
 // every route here needs a logged in user
 router.use(authMiddleware);
 
-// makes a short code like SB-4F9A2C
-function makeCode() {
-  const letters = Math.random().toString(16).substring(2, 8).toUpperCase();
-  return 'SB-' + letters;
-}
-
-// GET /api/learner/progress - the tutorials this user finished
+// GET /api/learner/progress - tutorials where the facilitator approved my project
 router.get('/progress', (req, res) => {
-  const progress = db.findMany('progress', { userId: req.user.id });
-  res.json({ success: true, data: progress });
+  const done = db.findMany('submissions', { userId: req.user.id, status: 'approved' });
+  res.json({ success: true, data: done });
 });
 
-// POST /api/learner/complete/:tutorialId - mark a tutorial as done and give a certificate
-router.post('/complete/:tutorialId', (req, res) => {
+// GET /api/learner/submissions - all my projects and what the facilitator said
+router.get('/submissions', (req, res) => {
+  const submissions = db.findMany('submissions', { userId: req.user.id });
+  res.json({ success: true, data: submissions });
+});
+
+// POST /api/learner/submit/:tutorialId - send my project for a tutorial
+router.post('/submit/:tutorialId', (req, res) => {
   const tutorial = db.findById('tutorials', req.params.tutorialId);
   if (!tutorial) {
     return res.status(404).json({ success: false, message: 'Tutorial not found' });
   }
 
-  // already finished before?
-  const old = db.findOne('progress', { userId: req.user.id, tutorialId: tutorial.id });
-  if (old) {
-    return res.status(400).json({ success: false, message: 'You already finished this tutorial' });
+  const { projectLink, notes } = req.body;
+  if (!projectLink) {
+    return res.status(400).json({ success: false, message: 'Please add the link to your project' });
+  }
+
+  // you can send a new one only if the old one was rejected
+  const old = db.findMany('submissions', { userId: req.user.id, tutorialId: tutorial.id });
+  const blocking = old.find(s => s.status === 'pending' || s.status === 'approved');
+  if (blocking) {
+    const msg = blocking.status === 'pending'
+      ? 'Your project is still waiting for the facilitator'
+      : 'Your project was already approved';
+    return res.status(400).json({ success: false, message: msg });
   }
 
   const user = db.findById('users', req.user.id);
-
-  db.insert('progress', {
-    userId: req.user.id,
-    tutorialId: tutorial.id,
-    completedAt: new Date().toISOString()
-  });
-
-  const certificate = db.insert('certificates', {
-    code: makeCode(),
+  const submission = db.insert('submissions', {
     userId: req.user.id,
     learnerName: user ? user.name : '',
     tutorialId: tutorial.id,
     tutorialTitle: tutorial.title,
-    issuedAt: new Date().toISOString()
+    projectLink,
+    notes: notes || '',
+    status: 'pending',
+    feedback: ''
   });
 
-  res.status(201).json({ success: true, message: 'Tutorial completed', data: certificate });
+  res.status(201).json({ success: true, message: 'Project sent to the facilitator', data: submission });
 });
 
 // GET /api/learner/certificates - my certificates
