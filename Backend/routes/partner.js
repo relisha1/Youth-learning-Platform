@@ -15,6 +15,29 @@ function getMyJob(req) {
   return job;
 }
 
+// GET /api/partner/profile - my company info
+router.get('/profile', (req, res) => {
+  const user = db.findById('users', req.user.id);
+  res.json({
+    success: true,
+    data: {
+      companyName: user.companyName || '',
+      website: user.website || '',
+      about: user.about || ''
+    }
+  });
+});
+
+// PUT /api/partner/profile - save my company info
+router.put('/profile', (req, res) => {
+  const updates = {};
+  ['companyName', 'website', 'about'].forEach(field => {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
+  });
+  db.update('users', req.user.id, updates);
+  res.json({ success: true, message: 'Company info saved', data: updates });
+});
+
 // GET /api/partner/jobs - jobs I posted
 router.get('/jobs', (req, res) => {
   const jobs = db.findMany('internships', { postedBy: req.user.id });
@@ -23,7 +46,10 @@ router.get('/jobs', (req, res) => {
 
 // POST /api/partner/jobs - post a new job
 router.post('/jobs', (req, res) => {
-  const { title, company, description, location, type } = req.body;
+  const me = db.findById('users', req.user.id);
+  const { title, description, location, type, deadline, skills, requiresCertificate } = req.body;
+  // if no company name is typed we use the one from my company info
+  const company = req.body.company || me.companyName;
 
   if (!title || !company || !description) {
     return res.status(400).json({
@@ -38,6 +64,10 @@ router.post('/jobs', (req, res) => {
     description,
     location: location || 'Kigali',
     type: type || 'internship',
+    skills: skills || '',
+    deadline: deadline || '',
+    contactEmail: req.body.contactEmail || me.email,
+    requiresCertificate: requiresCertificate === true,
     status: 'open',
     applicants: 0,
     postedBy: req.user.id
@@ -55,7 +85,7 @@ router.put('/jobs/:id', (req, res) => {
 
   // only these fields can be changed
   const updates = {};
-  ['title', 'company', 'description', 'location', 'type', 'status'].forEach(field => {
+  ['title', 'company', 'description', 'location', 'type', 'status', 'skills', 'deadline', 'contactEmail', 'requiresCertificate'].forEach(field => {
     if (req.body[field] !== undefined) updates[field] = req.body[field];
   });
 

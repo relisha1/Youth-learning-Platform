@@ -72,6 +72,19 @@ router.post('/apply/:jobId', (req, res) => {
     return res.status(400).json({ success: false, message: 'This job is closed' });
   }
 
+  // some jobs need at least one certificate
+  if (job.requiresCertificate) {
+    const myCertificates = db.findMany('certificates', { userId: req.user.id });
+    if (myCertificates.length === 0) {
+      return res.status(400).json({ success: false, message: 'This job needs at least one certificate' });
+    }
+  }
+
+  // the deadline is a date like 2026-12-31
+  if (job.deadline && new Date(job.deadline + 'T23:59:59') < new Date()) {
+    return res.status(400).json({ success: false, message: 'The deadline for this job has passed' });
+  }
+
   const old = db.findOne('applications', { userId: req.user.id, internshipId: job.id });
   if (old) {
     return res.status(400).json({ success: false, message: 'You already applied for this job' });
