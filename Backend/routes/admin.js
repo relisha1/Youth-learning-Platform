@@ -3,6 +3,7 @@ const User = require('../models/User');
 const db = require('../models/database');
 const { authMiddleware, isAdmin } = require('../middleware/auth');
 const { notify } = require('../services/notify');
+const { buildReport, reportToCsv } = require('../services/report');
 
 const router = express.Router();
 
@@ -392,7 +393,7 @@ router.get('/applications', (req, res) => {
 router.put('/applications/:id/status', (req, res) => {
   try {
     const { status } = req.body;
-    const validStatuses = ['pending', 'approved', 'rejected'];
+    const validStatuses = ['pending', 'accepted', 'rejected'];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
@@ -437,7 +438,7 @@ router.get('/stats', (req, res) => {
       },
       applicationsByStatus: {
         pending: db.count('applications', { status: 'pending' }),
-        approved: db.count('applications', { status: 'approved' }),
+        accepted: db.count('applications', { status: 'accepted' }),
         rejected: db.count('applications', { status: 'rejected' })
       }
     };
@@ -452,6 +453,22 @@ router.get('/stats', (req, res) => {
       message: error.message
     });
   }
+});
+
+// @route   GET /api/admin/report
+// @desc    Numbers for the pilot: learners, projects, certificates, jobs, mentoring
+// @access  Private (Admin only)
+router.get('/report', (req, res) => {
+  res.json({ success: true, data: buildReport() });
+});
+
+// @route   GET /api/admin/report.csv
+// @desc    The same report as a file for Excel
+// @access  Private (Admin only)
+router.get('/report.csv', (req, res) => {
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename="pilot-report.csv"');
+  res.send(reportToCsv(buildReport()));
 });
 
 module.exports = router;
