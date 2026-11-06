@@ -8,6 +8,7 @@ const PartnerDashboard = () => {
   const [applicants, setApplicants] = useState([]);
   const [openJob, setOpenJob] = useState(null);
   const [allApps, setAllApps] = useState([]);
+  const [search, setSearch] = useState('');
   const [learners, setLearners] = useState([]);
   const [message, setMessage] = useState('');
   const emptyJob = { title: '', description: '', location: '', type: 'internship', skills: '', deadline: '', requiresCertificate: false };
@@ -104,6 +105,26 @@ const PartnerDashboard = () => {
     setApplicants(res.data.data);
     setOpenJob(job);
   };
+
+  // write a short message to a learner (they get a notification with my email)
+  const handleContact = async (learner) => {
+    const text = window.prompt('Write a short message to ' + learner.name);
+    if (!text) return;
+    try {
+      const res = await partnerAPI.contactLearner(learner.id, text);
+      setMessage(res.data.message);
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Could not send the message');
+    }
+  };
+
+  // learners that match the search (name, skill or path)
+  const shownLearners = learners.filter(l => {
+    const words = search.trim().toLowerCase();
+    if (!words) return true;
+    const text = [l.name, l.skills.join(' '), l.certificates.map(c => c.tutorialTitle + ' ' + c.pathName).join(' ')].join(' ').toLowerCase();
+    return text.includes(words);
+  });
 
   const handleStatus = async (application, status) => {
     await partnerAPI.setStatus(application.id, status);
@@ -208,13 +229,25 @@ const PartnerDashboard = () => {
       )}
 
       <h3 className="pg-section-title">Learners with certificates</h3>
-      <p className="pg-muted">You can check any code on the <a href="/verify">Verify page</a>.</p>
+      <p className="pg-muted">Every certificate here was given by a facilitator after checking a real project. You can also check any code on the <a href="/verify">Verify page</a>.</p>
+      <input className="pg-search" placeholder="Search by name, skill or path (example: C, Python)" value={search} onChange={(e) => setSearch(e.target.value)} />
       {learners.length === 0 && <div className="pg-empty">No learner has a certificate yet.</div>}
+      {learners.length > 0 && shownLearners.length === 0 && <div className="pg-empty">No learner matches your search.</div>}
       <div className="pg-grid">
-        {learners.map(l => (
+        {shownLearners.map(l => (
           <div className="pg-item" key={l.id}>
             <h4>{l.name}</h4>
-            <p>{l.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
+            {l.bio && <p>{l.bio}</p>}
+            {l.skills.length > 0 && <p>Skills: {l.skills.join(', ')}</p>}
+            {l.certificates.map(c => (
+              <p key={c.code}>
+                🏆 {c.tutorialTitle} ({c.code})
+                {c.projectLink && <> · <a href={c.projectLink} target="_blank" rel="noreferrer">see project</a></>}
+              </p>
+            ))}
+            <div className="pg-buttons">
+              <button className="pg-btn" onClick={() => handleContact(l)}>Contact</button>
+            </div>
           </div>
         ))}
       </div>

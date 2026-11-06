@@ -87,6 +87,7 @@ export const partnerAPI = {
   getApplicants: (id) => api.get(`/partner/jobs/${id}/applicants`),
   setStatus: (appId, status) => api.put(`/partner/applications/${appId}`, { status }),
   getLearners: () => api.get('/partner/learners'),
+  contactLearner: (id, message) => api.post(`/partner/learners/${id}/contact`, { message }),
 };
 
 export const publicAPI = {
