@@ -1,6 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -21,9 +22,14 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || process.env
 
 const app = express();
 
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000']
-}));
+// when the website is online the backend serves it too, so CORS is only needed while developing
+const allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+if (process.env.CLIENT_URL) allowedOrigins.push(process.env.CLIENT_URL);
+
+// the host puts a proxy in front of the app, so we trust it to get the real address of the visitor
+app.set('trust proxy', 1);
+
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 // make the first admin from the .env values if there are no users yet
@@ -43,7 +49,7 @@ if (db.count('users') === 0 && process.env.ADMIN_EMAIL && process.env.ADMIN_PASS
   console.log('First admin created for', process.env.ADMIN_EMAIL);
 }
 
-app.get('/', (req, res) => res.json({ success: true, message: 'Youth Tech Hub API', version: '1.0.0' }));
+app.get('/api', (req, res) => res.json({ success: true, message: 'Youth Tech Hub API', version: '1.0.0' }));
 app.get('/health', (req, res) => res.json({ success: true, message: 'ok' }));
 
 app.use('/api/auth', authRoutes);
@@ -53,6 +59,16 @@ app.use('/api/learner', learnerRoutes);
 app.use('/api/partner', partnerRoutes);
 app.use('/api/mentor', mentorRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+// if the website was built (Frontend/dist), serve it. Any page that is not /api opens the website.
+const websiteFolder = path.join(__dirname, '../Frontend/dist');
+if (fs.existsSync(websiteFolder)) {
+  app.use(express.static(websiteFolder));
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(websiteFolder, 'index.html'));
+  });
+  console.log('Serving the website from', websiteFolder);
+}
 
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 
