@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as adminAPI from '../services/adminAPI';
+import { API_URL } from '../config';
 import '../styles/AdminDashboard.css';
 
 // one item per line
@@ -57,7 +58,7 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Failed to load data:', err);
       let msg = err?.response?.data?.message || err?.message || 'Failed to load admin data';
-      if (msg === 'Network Error') msg = 'Network Error: cannot reach backend at http://localhost:5000. Is the backend running?';
+      if (msg === 'Network Error') msg = 'Network Error: cannot reach the server. Is the backend running?';
       setLoadError(msg);
     } finally {
       setLoading(false);
@@ -77,7 +78,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     setLoginError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(API_URL + '/auth/login', {
         email: loginEmail,
         password: loginPassword
       });

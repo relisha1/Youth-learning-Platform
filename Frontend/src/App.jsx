@@ -7,7 +7,6 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Tutorials from './pages/Tutorials';
 import AdminDashboard from './pages/AdminDashboard';
-import Diagnostic from './pages/Diagnostic';
 import Jobs from './pages/Jobs';
 import MyCertificates from './pages/MyCertificates';
 import PartnerDashboard from './pages/PartnerDashboard';
@@ -28,7 +27,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/diagnostic" element={<Diagnostic />} />
             <Route path="/verify" element={<Verify />} />
             <Route path="/certificate/:code" element={<Certificate />} />
             <Route path="/jobs" element={<PrivateRoute><Jobs /></PrivateRoute>} />

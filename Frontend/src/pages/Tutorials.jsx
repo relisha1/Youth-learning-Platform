@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { learnerAPI } from '../services/api';
+import { learnerAPI, publicAPI } from '../services/api';
 import '../styles/Tutorials.css';
 
 const Tutorials = () => {
@@ -51,7 +50,7 @@ const Tutorials = () => {
 
   const fetchTutorials = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/public/tutorials');
+      const res = await publicAPI.getTutorials();
       setTutorials(Array.isArray(res.data.data) ? res.data.data : []);
       setError('');
     } catch (err) {
