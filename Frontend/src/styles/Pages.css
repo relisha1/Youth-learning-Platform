@@ -315,3 +315,8 @@
   color: #666;
   line-height: 1.6;
 }
+
+a.pg-btn {
+  text-decoration: none;
+  display: inline-block;
+}

@@ -12,6 +12,7 @@ import Jobs from './pages/Jobs';
 import MyCertificates from './pages/MyCertificates';
 import PartnerDashboard from './pages/PartnerDashboard';
 import Verify from './pages/Verify';
+import Certificate from './pages/Certificate';
 import FindMentor from './pages/FindMentor';
 import MentoringRequests from './pages/MentoringRequests';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
@@ -28,6 +29,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/diagnostic" element={<Diagnostic />} />
             <Route path="/verify" element={<Verify />} />
+            <Route path="/certificate/:code" element={<Certificate />} />
             <Route path="/jobs" element={<PrivateRoute><Jobs /></PrivateRoute>} />
             <Route path="/my-certificates" element={<PrivateRoute><MyCertificates /></PrivateRoute>} />
             <Route path="/facilitator" element={<PrivateRoute><FacilitatorDashboard /></PrivateRoute>} />

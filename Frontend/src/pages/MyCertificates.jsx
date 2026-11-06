@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { learnerAPI } from '../services/api';
 import PageLayout from '../components/PageLayout';
 
@@ -43,7 +44,11 @@ const MyCertificates = () => {
             <h4>{c.tutorialTitle}</h4>
             <p>Code: <span className="pg-code">{c.code}</span></p>
             <p>Date: {new Date(c.issuedAt).toLocaleDateString()}</p>
-            {c.issuedBy && <p>Given by facilitator {c.issuedBy}</p>}
+            {c.issuedBy && <p>Approved by facilitator {c.issuedBy}</p>}
+            {c.skills && c.skills.length > 0 && <p>Skills: {c.skills.join(', ')}</p>}
+            <div className="pg-buttons">
+              <Link className="pg-btn" to={'/certificate/' + c.code}>View and print</Link>
+            </div>
           </div>
         ))}
       </div>
