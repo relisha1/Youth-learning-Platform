@@ -164,7 +164,8 @@ router.put('/applications/:id', (req, res) => {
     const text = status === 'hired'
       ? 'Congratulations! ' + job.company + ' chose you for ' + job.title
       : 'Your application for ' + job.title + ' at ' + job.company + ' was ' + status;
-    notify(application.userId, 'Job application ' + status, text, '/my-certificates', true);
+    const title = status === 'hired' ? 'You got the job! 🎉' : 'Job application ' + status;
+    notify(application.userId, title, text, '/my-certificates', true);
   }
   res.json({ success: true, message: 'Application updated', data: updated });
 });
@@ -176,12 +177,48 @@ router.get('/learners', (req, res) => {
 
   certificates.forEach(c => {
     if (!learners[c.userId]) {
-      learners[c.userId] = { id: c.userId, name: c.learnerName, certificates: [] };
+      const user = db.findById('users', c.userId);
+      // the contact details stay hidden, employers use the Contact button
+      learners[c.userId] = {
+        id: c.userId,
+        name: c.learnerName,
+        bio: user && user.bio ? user.bio : '',
+        skills: [],
+        certificates: []
+      };
     }
-    learners[c.userId].certificates.push({ code: c.code, tutorialTitle: c.tutorialTitle, issuedAt: c.issuedAt });
+    const learner = learners[c.userId];
+    (c.skills || []).forEach(skill => {
+      if (!learner.skills.includes(skill)) learner.skills.push(skill);
+    });
+    learner.certificates.push({
+      code: c.code,
+      tutorialTitle: c.tutorialTitle,
+      pathName: c.pathName || '',
+      projectLink: c.projectLink || '',
+      issuedAt: c.issuedAt
+    });
   });
 
   res.json({ success: true, data: Object.values(learners) });
+});
+
+// POST /api/partner/learners/:id/contact - tell a learner that I am interested
+router.post('/learners/:id/contact', (req, res) => {
+  const learner = db.findById('users', req.params.id);
+  if (!learner || learner.role !== 'student') {
+    return res.status(404).json({ success: false, message: 'Learner not found' });
+  }
+
+  const me = db.findById('users', req.user.id);
+  const text = String(req.body.message || '').trim().slice(0, 500);
+  if (!text) {
+    return res.status(400).json({ success: false, message: 'Write a short message first' });
+  }
+
+  const company = me.companyName || me.name;
+  notify(learner.id, 'An employer is interested', company + ' wrote: ' + text + ' (reply to ' + me.email + ')', '/notifications', true);
+  res.json({ success: true, message: 'Message sent to ' + learner.name });
 });
 
 module.exports = router;
