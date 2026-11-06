@@ -1,9 +1,17 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { publicAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Home.css';
 
 const Home = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const [stats, setStats] = useState(null);
+
+  // real numbers from the database
+  useEffect(() => {
+    publicAPI.getStats().then(res => setStats(res.data.data)).catch(() => setStats(null));
+  }, []);
 
   return (
     <div className="home">
@@ -80,43 +88,43 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="stats">
-        <div className="stat">
-          <h3>500+</h3>
-          <p>Students Enrolled</p>
-        </div>
-        <div className="stat">
-          <h3>50+</h3>
-          <p>Expert Mentors</p>
-        </div>
-        <div className="stat">
-          <h3>100+</h3>
-          <p>Internships Posted</p>
-        </div>
-        <div className="stat">
-          <h3>85%</h3>
-          <p>Placement Rate</p>
-        </div>
-      </section>
-
-      {/* Admin Link Section */}
-      <section className="admin-link-section">
-        <Link to="/admin" className="admin-link">
-          Admin Panel →
-        </Link>
-      </section>
+      {/* Stats Section - only shown when the numbers load */}
+      {stats && (
+        <section className="stats">
+          <div className="stat">
+            <h3>{stats.learners}</h3>
+            <p>Learners</p>
+          </div>
+          <div className="stat">
+            <h3>{stats.facilitators}</h3>
+            <p>Facilitators</p>
+          </div>
+          <div className="stat">
+            <h3>{stats.certificates}</h3>
+            <p>Certificates issued</p>
+          </div>
+          <div className="stat">
+            <h3>{stats.openJobs}</h3>
+            <p>Open jobs</p>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="cta-section">
         <h2>Ready to Start Your Tech Journey?</h2>
-        <p>Join thousands of Rwandan youth learning and growing together</p>
+        <p>Learn, build a project, get a certificate employers can trust</p>
         {!isAuthenticated && (
           <Link to="/register" className="btn btn-primary btn-large">
             Get Started Now
           </Link>
         )}
       </section>
+
+      <footer className="home-footer">
+        <Link to="/verify">Verify a certificate</Link>
+        <Link to="/admin">Admin</Link>
+      </footer>
     </div>
   );
 };

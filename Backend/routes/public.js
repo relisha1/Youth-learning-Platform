@@ -98,10 +98,11 @@ router.get('/stats', (req, res) => {
     res.json({
       success: true,
       data: {
-        totalUsers: db.count('users'),
-        totalTutorials: db.count('tutorials'),
-        totalInternships: db.count('internships'),
-        totalApplications: db.count('applications')
+        learners: db.findMany('users', { role: 'student' }).length,
+        facilitators: db.findMany('users', { role: 'mentor' }).filter(u => u.approved !== false).length,
+        certificates: db.count('certificates'),
+        openJobs: db.getAll('internships').filter(j => j.postedBy && j.status !== 'closed').length,
+        hired: db.findMany('applications', { status: 'hired' }).length
       }
     });
   } catch (error) {

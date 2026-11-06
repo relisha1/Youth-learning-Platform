@@ -85,6 +85,7 @@ export const partnerAPI = {
 export const publicAPI = {
   getTutorials: () => api.get('/public/tutorials'),
   getJobs: () => api.get('/public/internships'),
+  getStats: () => api.get('/public/stats'),
   verify: (code) => api.get(`/public/verify/${code}`),
 };
 
