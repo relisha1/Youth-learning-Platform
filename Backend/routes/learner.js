@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../models/database');
 const { authMiddleware } = require('../middleware/auth');
+const { notify, notifyMentors } = require('../services/notify');
 
 const router = express.Router();
 
@@ -53,6 +54,8 @@ router.post('/submit/:tutorialId', (req, res) => {
     feedback: ''
   });
 
+  notifyMentors('New project to check', user.name + ' sent a project for ' + tutorial.title, '/facilitator');
+
   res.status(201).json({ success: true, message: 'Project sent to the facilitator', data: submission });
 });
 
@@ -92,6 +95,8 @@ router.post('/mentorship/:mentorId', (req, res) => {
     message: req.body.message || '',
     status: 'pending'
   });
+
+  notify(mentor.id, 'New mentoring request', student.name + ' wants you as a mentor', '/mentoring');
 
   res.status(201).json({ success: true, message: 'Request sent', data: request });
 });
@@ -151,6 +156,10 @@ router.post('/apply/:jobId', (req, res) => {
   });
 
   db.update('internships', job.id, { applicants: (job.applicants || 0) + 1 });
+
+  if (job.postedBy) {
+    notify(job.postedBy, 'New applicant', user.name + ' applied for ' + job.title, '/partner');
+  }
 
   res.status(201).json({ success: true, message: 'Application sent', data: application });
 });

@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const db = require('../models/database');
 const { authMiddleware, isAdmin } = require('../middleware/auth');
+const { notify } = require('../services/notify');
 
 const router = express.Router();
 
@@ -105,6 +106,9 @@ router.put('/users/:id/approve', (req, res) => {
   }
   const approved = req.body.approved !== false;
   db.update('users', user.id, { approved });
+  if (approved) {
+    notify(user.id, 'Account approved', 'An admin approved your account. You can now use your page.', '/dashboard');
+  }
   res.json({ success: true, message: approved ? 'User approved' : 'Approval removed' });
 });
 

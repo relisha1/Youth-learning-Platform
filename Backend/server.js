@@ -11,6 +11,7 @@ const publicRoutes = require('./routes/public');
 const learnerRoutes = require('./routes/learner');
 const partnerRoutes = require('./routes/partner');
 const mentorRoutes = require('./routes/mentor');
+const notificationRoutes = require('./routes/notifications');
 const db = require('./models/database');
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || process.env.JWT_SECRET.startsWith('change')) {
@@ -51,6 +52,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/learner', learnerRoutes);
 app.use('/api/partner', partnerRoutes);
 app.use('/api/mentor', mentorRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 

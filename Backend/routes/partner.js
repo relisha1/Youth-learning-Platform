@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../models/database');
 const { authMiddleware, isPartner } = require('../middleware/auth');
+const { notify } = require('../services/notify');
 
 const router = express.Router();
 
@@ -139,6 +140,9 @@ router.put('/applications/:id', (req, res) => {
   }
 
   const updated = db.update('applications', application.id, { status });
+  if (status === 'accepted' || status === 'rejected') {
+    notify(application.userId, 'Job application ' + status, 'Your application for ' + job.title + ' at ' + job.company + ' was ' + status, '/my-certificates');
+  }
   res.json({ success: true, message: 'Application updated', data: updated });
 });
 

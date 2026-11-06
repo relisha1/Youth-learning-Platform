@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../models/database');
 const { authMiddleware, isMentor } = require('../middleware/auth');
+const { notify } = require('../services/notify');
 
 const router = express.Router();
 
@@ -72,6 +73,12 @@ router.put('/submissions/:id', (req, res) => {
     });
   }
 
+  if (status === 'approved') {
+    notify(submission.userId, 'Project approved 🎉', 'Your ' + submission.tutorialTitle + ' project was approved. Your certificate code is ' + certificate.code, '/my-certificates');
+  } else {
+    notify(submission.userId, 'Project needs changes', 'The facilitator asked for changes on your ' + submission.tutorialTitle + ' project: ' + feedback, '/tutorials');
+  }
+
   res.json({ success: true, message: 'Project ' + status, data: { submission: updated, certificate } });
 });
 
@@ -113,6 +120,8 @@ router.put('/requests/:id', (req, res) => {
   }
 
   const updated = db.update('mentorships', request.id, { status });
+  const text = status === 'accepted' ? 'accepted your mentoring request' : 'could not accept your mentoring request';
+  notify(request.studentId, 'Mentoring answer', request.mentorName + ' ' + text, '/find-mentor');
   res.json({ success: true, message: 'Request ' + status, data: updated });
 });
 
