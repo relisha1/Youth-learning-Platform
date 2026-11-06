@@ -56,6 +56,57 @@ router.post('/submit/:tutorialId', (req, res) => {
   res.status(201).json({ success: true, message: 'Project sent to the facilitator', data: submission });
 });
 
+// GET /api/learner/mentors - facilitators a student can ask for help
+router.get('/mentors', (req, res) => {
+  const users = db.findMany('users', { role: 'mentor' });
+  const mentors = users
+    .filter(u => u.approved !== false && u.isActive !== false)
+    .map(u => ({ id: u.id, name: u.name, bio: u.bio || '', skills: Array.isArray(u.skills) ? u.skills.join(', ') : (u.skills || '') }));
+  res.json({ success: true, data: mentors });
+});
+
+// POST /api/learner/mentorship/:mentorId - ask a facilitator to mentor me
+router.post('/mentorship/:mentorId', (req, res) => {
+  const mentor = db.findById('users', req.params.mentorId);
+  if (!mentor || mentor.role !== 'mentor' || mentor.approved === false) {
+    return res.status(404).json({ success: false, message: 'Facilitator not found' });
+  }
+
+  // one open request per facilitator
+  const old = db.findMany('mentorships', { studentId: req.user.id, mentorId: mentor.id });
+  const open = old.find(m => m.status === 'pending' || m.status === 'accepted');
+  if (open) {
+    return res.status(400).json({
+      success: false,
+      message: open.status === 'pending' ? 'You already sent a request to this facilitator' : 'This facilitator is already your mentor'
+    });
+  }
+
+  const student = db.findById('users', req.user.id);
+  const request = db.insert('mentorships', {
+    studentId: req.user.id,
+    studentName: student.name,
+    studentEmail: student.email,
+    mentorId: mentor.id,
+    mentorName: mentor.name,
+    message: req.body.message || '',
+    status: 'pending'
+  });
+
+  res.status(201).json({ success: true, message: 'Request sent', data: request });
+});
+
+// GET /api/learner/mentorships - my requests
+router.get('/mentorships', (req, res) => {
+  const requests = db.findMany('mentorships', { studentId: req.user.id });
+  // the facilitator's email is shown only after they said yes
+  const list = requests.map(r => {
+    const mentor = db.findById('users', r.mentorId);
+    return { ...r, mentorEmail: r.status === 'accepted' && mentor ? mentor.email : '' };
+  });
+  res.json({ success: true, data: list });
+});
+
 // GET /api/learner/certificates - my certificates
 router.get('/certificates', (req, res) => {
   const certificates = db.findMany('certificates', { userId: req.user.id });

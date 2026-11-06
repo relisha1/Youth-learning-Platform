@@ -66,4 +66,45 @@ router.put('/submissions/:id', (req, res) => {
   res.json({ success: true, message: 'Project ' + status, data: { submission: updated, certificate } });
 });
 
+// GET /api/mentor/profile - what students see about me
+router.get('/profile', (req, res) => {
+  const me = db.findById('users', req.user.id);
+  res.json({ success: true, data: { bio: me.bio || '', skills: Array.isArray(me.skills) ? me.skills.join(', ') : (me.skills || '') } });
+});
+
+// PUT /api/mentor/profile
+router.put('/profile', (req, res) => {
+  const updates = {};
+  ['bio', 'skills'].forEach(field => {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
+  });
+  db.update('users', req.user.id, updates);
+  res.json({ success: true, message: 'Profile saved', data: updates });
+});
+
+// GET /api/mentor/requests - students who asked me to be their mentor
+router.get('/requests', (req, res) => {
+  const requests = db.findMany('mentorships', { mentorId: req.user.id });
+  res.json({ success: true, data: requests });
+});
+
+// PUT /api/mentor/requests/:id - accept or decline
+router.put('/requests/:id', (req, res) => {
+  const { status } = req.body;
+  if (status !== 'accepted' && status !== 'declined') {
+    return res.status(400).json({ success: false, message: 'Status must be accepted or declined' });
+  }
+
+  const request = db.findById('mentorships', req.params.id);
+  if (!request || String(request.mentorId) !== String(req.user.id)) {
+    return res.status(404).json({ success: false, message: 'Request not found' });
+  }
+  if (request.status !== 'pending') {
+    return res.status(400).json({ success: false, message: 'You already answered this request' });
+  }
+
+  const updated = db.update('mentorships', request.id, { status });
+  res.json({ success: true, message: 'Request ' + status, data: updated });
+});
+
 module.exports = router;
