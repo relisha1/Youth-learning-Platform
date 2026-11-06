@@ -46,8 +46,8 @@ const Home = () => {
             <div className="feature-icon">📚</div>
             <h3>Coding Tutorials</h3>
             <p>
-              Learn programming from scratch with our comprehensive tutorials in 
-              English and Kinyarwanda. From HTML to React, we've got you covered!
+              Learn programming from scratch with step by step lessons. Every path ends
+              with a project that a facilitator checks before you get your certificate.
             </p>
           </div>
 
