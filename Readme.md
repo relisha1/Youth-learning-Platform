@@ -48,7 +48,12 @@ mentoring request, account approved). SMS and email are also sent if you add key
 ## Chat, jobs and hiring
 - When a facilitator accepts a mentoring request, both people can talk on `/chat/ID`. The facilitator can finish the mentoring.
 - Students can search the jobs and filter them. Employers can search certified learners and send them a message.
-- An employer can accept an applicant and later mark them as **hired**. The report counts the hired learners.
+- An employer **shortlists** an applicant (status shown as Shortlisted). That opens a chat between the employer and the learner at `/application-chat/ID`,
+  and the employer can write the interview date, time and place. The learner gets a notification (and SMS if it is on).
+- Statuses on screen: Applied, Shortlisted, Hired, Not selected.
+- When the employer marks someone as **hired**, the learner must confirm "Yes, I got it". Only confirmed hires are counted on the home page and in the report,
+  so nobody can make the placement number bigger than it is. If the learner says no, the application goes back to Shortlisted.
+- After a confirmed hire the employer rates from 1 to 5 how ready the learner was for the work. The report shows the average rating.
 
 ## Backups
 The server saves a copy of the database in `Backend/data/backups` every day and keeps the last 7.
