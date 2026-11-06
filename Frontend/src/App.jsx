@@ -13,6 +13,7 @@ import MyCertificates from './pages/MyCertificates';
 import PartnerDashboard from './pages/PartnerDashboard';
 import Verify from './pages/Verify';
 import Certificate from './pages/Certificate';
+import Notifications from './pages/Notifications';
 import FindMentor from './pages/FindMentor';
 import MentoringRequests from './pages/MentoringRequests';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
@@ -35,6 +36,7 @@ function App() {
             <Route path="/facilitator" element={<PrivateRoute><FacilitatorDashboard /></PrivateRoute>} />
             <Route path="/find-mentor" element={<PrivateRoute><FindMentor /></PrivateRoute>} />
             <Route path="/mentoring" element={<PrivateRoute><MentoringRequests /></PrivateRoute>} />
+            <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
             <Route path="/partner" element={<PrivateRoute><PartnerDashboard /></PrivateRoute>} />
             <Route 
               path="/dashboard" 

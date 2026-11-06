@@ -45,6 +45,11 @@ export const learnerAPI = {
   getMentorships: () => api.get('/learner/mentorships'),
 };
 
+export const notificationAPI = {
+  getAll: () => api.get('/notifications'),
+  markAllRead: () => api.put('/notifications/read'),
+};
+
 export const mentorAPI = {
   getSubmissions: (status) => api.get('/mentor/submissions', { params: { status } }),
   review: (id, status, feedback) => api.put(`/mentor/submissions/${id}`, { status, feedback }),

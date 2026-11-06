@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import NotificationBell from '../components/NotificationBell';
 import { learnerAPI, publicAPI, authAPI, setUser as saveUser } from '../services/api';
 import '../styles/Dashboard.css';
 
@@ -76,9 +77,12 @@ const Dashboard = () => {
       <header className="dashboard-header">
         <div className="header-content">
           <h1>Youth Tech Hub</h1>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <NotificationBell />
           <button onClick={handleLogout} className="btn-logout">
             Logout
           </button>
+          </div>
         </div>
       </header>
 

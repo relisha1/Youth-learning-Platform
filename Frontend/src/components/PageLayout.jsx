@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
 import '../styles/Pages.css';
 
 // same header as the dashboard, used by the jobs, certificate, employer and facilitator pages
@@ -20,6 +21,7 @@ const PageLayout = ({ title, subtitle, children }) => {
           <div className="pg-header-buttons">
             {user ? (
               <>
+                <NotificationBell />
                 <button className="pg-header-btn" onClick={() => navigate('/dashboard')}>← Dashboard</button>
                 <button className="pg-header-btn" onClick={handleLogout}>Logout</button>
               </>
