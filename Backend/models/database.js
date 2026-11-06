@@ -14,7 +14,7 @@ try {
 // all the tables the app uses
 const TABLES = [
   'users', 'tutorials', 'mentorships', 'internships', 'applications',
-  'progress', 'certificates', 'submissions', 'notifications'
+  'progress', 'certificates', 'submissions', 'notifications', 'messages'
 ];
 
 // every table has an id and the rest of the record saved as text (JSON)

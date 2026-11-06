@@ -13,6 +13,7 @@ const learnerRoutes = require('./routes/learner');
 const partnerRoutes = require('./routes/partner');
 const mentorRoutes = require('./routes/mentor');
 const notificationRoutes = require('./routes/notifications');
+const chatRoutes = require('./routes/chat');
 const db = require('./models/database');
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || process.env.JWT_SECRET.startsWith('change')) {
@@ -59,6 +60,7 @@ app.use('/api/learner', learnerRoutes);
 app.use('/api/partner', partnerRoutes);
 app.use('/api/mentor', mentorRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/chat', chatRoutes);
 
 // if the website was built (Frontend/dist), serve it. Any page that is not /api opens the website.
 const websiteFolder = path.join(__dirname, '../Frontend/dist');
