@@ -223,6 +223,8 @@ const Dashboard = () => {
             <p><strong>Email:</strong> {user?.email}</p>
             <p><strong>Phone:</strong> {user?.phone || 'Not provided'}</p>
             <p><strong>Member since:</strong> {new Date(user?.createdAt).toLocaleDateString()}</p>
+            {user?.emailVerified === false && <p>⚠️ Your email is not confirmed yet. Check your inbox.</p>}
+            <button className="btn-feature" onClick={() => navigate('/profile')}>Edit profile</button>
           </div>
         </div>
       </div>
