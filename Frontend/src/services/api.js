@@ -54,6 +54,12 @@ export const notificationAPI = {
   markAllRead: () => api.put('/notifications/read'),
 };
 
+export const chatAPI = {
+  get: (id) => api.get(`/chat/${id}`),
+  send: (id, text) => api.post(`/chat/${id}`, { text }),
+  finish: (id) => api.put(`/chat/${id}/finish`),
+};
+
 export const mentorAPI = {
   getSubmissions: (status) => api.get('/mentor/submissions', { params: { status } }),
   review: (id, status, feedback) => api.put(`/mentor/submissions/${id}`, { status, feedback }),

@@ -16,6 +16,7 @@ import Notifications from './pages/Notifications';
 import FindMentor from './pages/FindMentor';
 import MentoringRequests from './pages/MentoringRequests';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
+import Chat from './pages/Chat';
 import './App.css';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path="/facilitator" element={<PrivateRoute><FacilitatorDashboard /></PrivateRoute>} />
             <Route path="/find-mentor" element={<PrivateRoute><FindMentor /></PrivateRoute>} />
             <Route path="/mentoring" element={<PrivateRoute><MentoringRequests /></PrivateRoute>} />
+            <Route path="/chat/:id" element={<PrivateRoute><Chat /></PrivateRoute>} />
             <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
             <Route path="/partner" element={<PrivateRoute><PartnerDashboard /></PrivateRoute>} />
             <Route 
