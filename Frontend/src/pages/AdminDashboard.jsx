@@ -54,7 +54,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Check if user is already logged in
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem('adminToken');
     if (token) {
       setIsLoggedIn(true);
       loadData();
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
         setLoginError('This page is for admins only');
         return;
       }
-      sessionStorage.setItem('token', token);
+      localStorage.setItem('adminToken', token);
       setUser(userData);
       setIsLoggedIn(true);
       setLoginEmail('');
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('token');
+    localStorage.removeItem('adminToken');
     setIsLoggedIn(false);
     setUser(null);
     setUsers([]);

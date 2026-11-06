@@ -8,7 +8,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem('token');
+  const token = localStorage.getItem('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -17,8 +17,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -65,15 +65,15 @@ export const publicAPI = {
   verify: (code) => api.get(`/public/verify/${code}`),
 };
 
-export const setAuthToken = (token) => sessionStorage.setItem('token', token);
-export const setUser = (user) => sessionStorage.setItem('user', JSON.stringify(user));
+export const setAuthToken = (token) => localStorage.setItem('token', token);
+export const setUser = (user) => localStorage.setItem('user', JSON.stringify(user));
 export const getUser = () => {
-  const user = sessionStorage.getItem('user');
+  const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
 };
 export const logout = () => {
-  sessionStorage.removeItem('token');
-  sessionStorage.removeItem('user');
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
 };
 
 export default api;
