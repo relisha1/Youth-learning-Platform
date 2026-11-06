@@ -3,62 +3,153 @@
   "tutorials": [
     {
       "id": 1,
-      "title": "JavaScript Basics",
-      "description": "Learn the fundamentals of JavaScript programming",
-      "category": "Programming",
-      "content": "JavaScript is a versatile programming language that powers interactive web applications. In this tutorial, you will learn about variables, data types, functions, loops, and conditionals.",
+      "title": "C Programming: Think Like the Machine",
+      "path": "Low-level programming",
+      "description": "Learn C and see how memory really works. This is the base for systems, embedded and security work.",
+      "category": "Low-Level Programming",
       "level": "beginner",
-      "duration": 120,
+      "duration": 480,
       "image": "",
-      "projectBrief": "Build a small page with a tip calculator using only JavaScript. Put it on GitHub and send the link."
+      "content": "C is close to the hardware, so you learn what the computer is really doing. You will write small programs in the terminal, use pointers, manage memory yourself and save data to a file. You need a computer with gcc (on Windows install MinGW or use WSL).",
+      "lessons": [
+        {
+          "title": "Your first C program",
+          "content": "Every C program starts in a function called main. You write the code in a file that ends with .c, then compile it with gcc. Compiling turns your text into a program the computer can run. printf prints text, and return 0 tells the system that everything went well. Compile with: gcc hello.c -o hello -Wall and run it with ./hello (on Windows: hello.exe). The -Wall flag shows warnings, so always use it.",
+          "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"Hello, Kigali!\\n\");\n    return 0;\n}"
+        },
+        {
+          "title": "Variables, types and memory",
+          "content": "A variable is a named place in memory. The type tells the computer how many bytes to use and how to read them. An int is usually 4 bytes, a char is 1 byte and a float is 4 bytes. The sizeof operator tells you the size. Knowing the size of your data is the first step to understanding memory.",
+          "code": "#include <stdio.h>\n\nint main(void)\n{\n    int age = 20;\n    char grade = 'A';\n    float price = 12.5;\n\n    printf(\"int uses %zu bytes\\n\", sizeof(age));\n    printf(\"char uses %zu byte\\n\", sizeof(grade));\n    printf(\"float uses %zu bytes\\n\", sizeof(price));\n    return 0;\n}"
+        },
+        {
+          "title": "Pointers",
+          "content": "A pointer is a variable that holds the address of another variable. &score gives the address of score, and *p gives the value stored at the address in p. Pointers let a function change the real variable instead of a copy. This is how C functions return more than one result, and how arrays are passed around.",
+          "code": "#include <stdio.h>\n\nvoid add_ten(int *number)\n{\n    *number = *number + 10;\n}\n\nint main(void)\n{\n    int score = 5;\n    int *p = &score;      /* p holds the address of score */\n\n    printf(\"score = %d, address = %p\\n\", score, (void *)p);\n    add_ten(&score);      /* the function changes the real variable */\n    printf(\"score = %d\\n\", score);\n    return 0;\n}"
+        },
+        {
+          "title": "The heap: malloc and free",
+          "content": "Local variables live on the stack and disappear when the function ends. When you need memory that lives longer, or whose size you only know while the program runs, you ask the heap with malloc. You must always check that malloc did not return NULL, and you must give the memory back with free. If you forget, you get a memory leak. Strings in C are just char arrays that end with a zero byte, written '\\0'.",
+          "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    int count = 3;\n    int *marks = malloc(count * sizeof(int));\n\n    if (marks == NULL)\n    {\n        printf(\"Not enough memory\\n\");\n        return 1;\n    }\n\n    for (int i = 0; i < count; i++)\n        marks[i] = (i + 1) * 10;\n\n    printf(\"second mark = %d\\n\", marks[1]);\n    free(marks);          /* always give the memory back */\n    return 0;\n}"
+        },
+        {
+          "title": "Saving data in files",
+          "content": "Programs forget everything when they stop, unless you save to a file. fopen opens a file (modes: r read, w write, a add at the end). fprintf writes text, fgets reads a line, and fclose closes the file. Always check that fopen did not return NULL, because the file may be missing or locked.",
+          "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *file = fopen(\"contacts.txt\", \"a\");\n\n    if (file == NULL)\n    {\n        printf(\"Could not open the file\\n\");\n        return 1;\n    }\n\n    fprintf(file, \"Alice,0788000000\\n\");\n    fclose(file);\n    return 0;\n}"
+        }
+      ],
+      "projectBrief": "Build a command line Contact Book in C. The user can add a contact (name and phone), list all contacts, search by name, and quit. Keep the contacts in memory that you get with malloc, save them to a file when the program closes, and load them again when it starts. Put the code on GitHub with a README that explains how to compile and run it, then send the link.",
+      "rubric": [
+        "Compiles with gcc -Wall without warnings",
+        "Uses malloc and free correctly and checks for NULL",
+        "Add, list and search all work",
+        "Contacts are saved to a file and loaded again",
+        "Does not crash on empty or very long input",
+        "Code is split into small functions with clear names",
+        "README explains how to compile and run"
+      ],
+      "skills": [
+        "C programming",
+        "Pointers and memory management",
+        "File handling",
+        "Command line tools"
+      ]
     },
     {
       "id": 2,
-      "title": "React for Beginners",
-      "description": "Build interactive UIs with React framework",
+      "title": "Web Basics: HTML, CSS and JavaScript",
+      "path": "Web development",
+      "description": "Build and publish your first real website that works on a phone.",
       "category": "Web Development",
-      "content": "React is a JavaScript library for building user interfaces with reusable components. Learn JSX, state management, hooks, and component lifecycle.",
-      "level": "intermediate",
-      "duration": 180,
+      "level": "beginner",
+      "duration": 420,
       "image": "",
-      "projectBrief": "Build a to-do list in React where you can add and remove items. Put it on GitHub and send the link."
+      "content": "You will learn the three building blocks of every website. HTML gives the structure, CSS gives the style and JavaScript makes the page react to the user. At the end you publish your site for free so anyone can open it. You only need a browser and a text editor like VS Code.",
+      "lessons": [
+        {
+          "title": "HTML: the structure of a page",
+          "content": "HTML uses tags to describe the content. Headings (h1 to h6), paragraphs (p), links (a), images (img), lists (ul and li) and forms are the tags you will use most. Every page has a head with the title and a body with what people see. Save the file with the .html ending and open it in your browser.",
+          "code": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Shop</title>\n  </head>\n  <body>\n    <h1>Welcome to my shop</h1>\n    <p>We sell fresh fruit in Kigali.</p>\n    <a href=\"contact.html\">Contact us</a>\n  </body>\n</html>"
+        },
+        {
+          "title": "CSS: style and layout",
+          "content": "CSS chooses elements with selectors and changes how they look: colours, fonts, spacing and the box model (content, padding, border, margin). Flexbox places items in a row or column and a media query changes the design on small screens. Most young people in Rwanda use a phone, so always check your page at phone width.",
+          "code": ".card {\n  background: white;\n  padding: 16px;\n  border-radius: 8px;\n  display: flex;\n  gap: 12px;\n}\n\n@media (max-width: 600px) {\n  .card {\n    flex-direction: column;\n  }\n}"
+        },
+        {
+          "title": "JavaScript: make it react",
+          "content": "JavaScript runs in the browser. It can find an element with document.getElementById, listen for events like a click, and change the page. Start small: one button that changes one text. Then try reading what a user typed in a form and checking it before sending.",
+          "code": "<button id=\"btn\">Click me</button>\n<p id=\"message\"></p>\n\n<script>\n  const button = document.getElementById(\"btn\");\n  const message = document.getElementById(\"message\");\n\n  button.addEventListener(\"click\", function () {\n    message.textContent = \"Hello from JavaScript!\";\n  });\n</script>"
+        },
+        {
+          "title": "Git and publishing on GitHub Pages",
+          "content": "Git saves versions of your project and GitHub stores them online. Make a repository, push your files, then in the repository settings turn on GitHub Pages. After a minute your site has a public link you can put on your CV. Make small commits with short messages that explain what changed.",
+          "code": "git init\ngit add .\ngit commit -m \"first version of my shop page\"\ngit branch -M main\ngit remote add origin https://github.com/YOUR-NAME/my-shop.git\ngit push -u origin main"
+        }
+      ],
+      "projectBrief": "Build a small website for a real or imaginary local business (a shop, a tutor, a salon). It needs at least three sections, a contact form that JavaScript checks before accepting (for example the name cannot be empty and the phone must have 10 digits), and a layout that looks good on a phone. Publish it with GitHub Pages and send the link to the live site and the repository.",
+      "rubric": [
+        "The live site opens from the link",
+        "HTML is well structured with headings, links and a form",
+        "The layout works on a phone screen",
+        "JavaScript checks the form and shows a clear message",
+        "There are several commits with clear messages",
+        "The content is original and readable"
+      ],
+      "skills": [
+        "HTML and CSS",
+        "JavaScript basics",
+        "Git and GitHub",
+        "Responsive design"
+      ]
     },
     {
       "id": 3,
-      "title": "Python Fundamentals",
-      "description": "Master the basics of Python programming",
+      "title": "Python for Problem Solving",
+      "path": "Programming basics",
+      "description": "Learn to think in steps and solve small real problems with Python.",
       "category": "Programming",
-      "content": "Python is a versatile language used in web development, data science, and automation. Learn syntax, data structures, functions, and object-oriented programming.",
       "level": "beginner",
-      "duration": 150,
+      "duration": 360,
       "image": "",
-      "projectBrief": "Write a Python program that reads a list of marks and prints the average, highest and lowest. Put it on GitHub and send the link."
-    },
-    {
-      "title": "Node JS Tips",
-      "description": "Short tips",
-      "category": "Programming",
-      "content": "Tips content",
-      "level": "intermediate",
-      "duration": 45,
-      "image": "",
-      "createdBy": "1",
-      "enrolled": 0,
-      "id": 4,
-      "projectBrief": "Make a small project that uses what you learned in this tutorial. Put it on GitHub and send the link."
-    },
-    {
-      "title": "C++",
-      "description": "introduction to C++ programming",
-      "category": "Programming",
-      "content": "",
-      "level": "beginner",
-      "duration": 0,
-      "image": "",
-      "createdBy": "1",
-      "enrolled": 0,
-      "id": 5,
-      "projectBrief": "Make a small project that uses what you learned in this tutorial. Put it on GitHub and send the link."
+      "content": "Python is a friendly language that is used for automation, data and the web. In this path you practise turning a problem into steps, and the steps into code. You need Python 3 installed, and you can run everything in the terminal.",
+      "lessons": [
+        {
+          "title": "Variables, input and output",
+          "content": "A variable stores a value, like name or age. input() asks the user to type something and print() shows a result. Everything from input() is text, so use int() to turn it into a number before you calculate.",
+          "code": "name = input(\"What is your name? \")\nage = int(input(\"How old are you? \"))\n\nprint(\"Hello\", name)\nprint(\"Next year you will be\", age + 1)"
+        },
+        {
+          "title": "Decisions and loops",
+          "content": "An if statement lets the program choose. A for loop repeats code, for example for every number in a range. Python uses indentation (spaces at the start of the line) to show which code belongs inside the if or the loop.",
+          "code": "mark = int(input(\"Enter a mark: \"))\n\nif mark >= 50:\n    print(\"Pass\")\nelse:\n    print(\"Fail\")\n\nfor number in range(1, 6):\n    print(number)"
+        },
+        {
+          "title": "Lists and dictionaries",
+          "content": "A list keeps many values in order, like marks. A dictionary keeps pairs, like a name and its mark. You can add to a list with append, count with len, and find the biggest value with max. These two are the tools you will use in almost every program.",
+          "code": "marks = [45, 70, 88, 52]\nmarks.append(91)\nprint(len(marks), \"marks, highest is\", max(marks))\n\nstudent = {\"name\": \"Alice\", \"mark\": 88}\nprint(student[\"name\"], \"got\", student[\"mark\"])"
+        },
+        {
+          "title": "Functions and files",
+          "content": "A function is a block of code with a name that you can use again. It takes inputs and can return a result. To work with real data you read files with open(). The with statement closes the file for you when you are done.",
+          "code": "def average(numbers):\n    return sum(numbers) / len(numbers)\n\nmarks = []\nwith open(\"marks.csv\") as file:\n    for line in file:\n        marks.append(int(line.strip()))\n\nprint(\"Average:\", average(marks))"
+        }
+      ],
+      "projectBrief": "Build a Student Marks Analyser. The program reads marks from a CSV file (one student and mark per line), then prints the average, the highest and lowest mark with the student names, and how many students passed (50 or more). It must also write these results to a report.txt file. Handle a missing file and bad lines without crashing. Put it on GitHub with a sample marks file and a README, then send the link.",
+      "rubric": [
+        "Reads the CSV file correctly",
+        "Average, highest, lowest and pass count are correct",
+        "Writes a report.txt file",
+        "Missing file or bad lines do not crash the program",
+        "Uses functions with clear names",
+        "README and a sample file are included"
+      ],
+      "skills": [
+        "Python",
+        "Lists and dictionaries",
+        "File reading and writing",
+        "Problem solving"
+      ]
     }
   ],
   "mentorships": [],

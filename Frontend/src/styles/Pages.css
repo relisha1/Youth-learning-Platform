@@ -308,3 +308,10 @@
     padding: 20px 12px;
   }
 }
+
+.pg-list {
+  margin: 4px 0 8px 0;
+  padding-left: 20px;
+  color: #666;
+  line-height: 1.6;
+}

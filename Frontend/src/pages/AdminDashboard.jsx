@@ -3,6 +3,17 @@ import axios from 'axios';
 import * as adminAPI from '../services/adminAPI';
 import '../styles/AdminDashboard.css';
 
+// one item per line
+const splitLines = (text) => text.split('\n').map(line => line.trim()).filter(line => line);
+
+// lessons are written like this: the first line is the title, then the text. A blank line starts the next lesson.
+const parseLessons = (text) => {
+  return text.split(/\n\s*\n/).map(block => {
+    const lines = block.trim().split('\n');
+    return { title: lines[0].trim(), content: lines.slice(1).join(' ').trim() };
+  }).filter(lesson => lesson.title);
+};
+
 const AdminDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -17,7 +28,7 @@ const AdminDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
-  const [newTutorial, setNewTutorial] = useState({ title: '', description: '', category: '', content: '', projectBrief: '', level: 'beginner' });
+  const [newTutorial, setNewTutorial] = useState({ title: '', description: '', category: '', content: '', projectBrief: '', lessonsText: '', rubricText: '', skillsText: '', level: 'beginner' });
   const [newInternship, setNewInternship] = useState({ title: '', description: '', company: '', duration: '' });
 
   // Helper: fetch all admin data in parallel
@@ -146,8 +157,13 @@ const AdminDashboard = () => {
         return;
       }
       try {
-        await adminAPI.createTutorial(newTutorial);
-        setNewTutorial({ title: '', description: '', category: '', content: '', projectBrief: '', level: 'beginner' });
+        await adminAPI.createTutorial({
+          ...newTutorial,
+          lessons: parseLessons(newTutorial.lessonsText),
+          rubric: splitLines(newTutorial.rubricText),
+          skills: newTutorial.skillsText.split(',').map(x => x.trim()).filter(x => x)
+        });
+        setNewTutorial({ title: '', description: '', category: '', content: '', projectBrief: '', lessonsText: '', rubricText: '', skillsText: '', level: 'beginner' });
         await loadData();
         alert('Tutorial added successfully!');
       } catch (err) {
@@ -328,7 +344,10 @@ const AdminDashboard = () => {
               <input type="text" placeholder="Title" value={newTutorial.title} onChange={(e) => setNewTutorial({...newTutorial, title: e.target.value})} className="form-input" />
               <textarea placeholder="Description" value={newTutorial.description} onChange={(e) => setNewTutorial({...newTutorial, description: e.target.value})} className="form-input" />
               <textarea placeholder="Lesson content" value={newTutorial.content} onChange={(e) => setNewTutorial({...newTutorial, content: e.target.value})} className="form-input" />
+              <textarea placeholder={"Lessons. First line = lesson title, next lines = the text.\nLeave a blank line between lessons."} value={newTutorial.lessonsText} onChange={(e) => setNewTutorial({...newTutorial, lessonsText: e.target.value})} className="form-input" rows="6" />
               <textarea placeholder="Project the student must do (the facilitator will check it)" value={newTutorial.projectBrief} onChange={(e) => setNewTutorial({...newTutorial, projectBrief: e.target.value})} className="form-input" />
+              <textarea placeholder="Checklist for the facilitator (one point per line)" value={newTutorial.rubricText} onChange={(e) => setNewTutorial({...newTutorial, rubricText: e.target.value})} className="form-input" />
+              <input type="text" placeholder="Skills the certificate shows (separate with commas)" value={newTutorial.skillsText} onChange={(e) => setNewTutorial({...newTutorial, skillsText: e.target.value})} className="form-input" />
               <input type="text" placeholder="Category" value={newTutorial.category} onChange={(e) => setNewTutorial({...newTutorial, category: e.target.value})} className="form-input" />
               <select value={newTutorial.level} onChange={(e) => setNewTutorial({...newTutorial, level: e.target.value})} className="form-input">
                 <option value="beginner">Beginner</option>

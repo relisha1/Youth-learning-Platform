@@ -92,11 +92,15 @@ const Tutorials = () => {
                 <div className="tutorial-level">{tutorial.level}</div>
                 {getSubmission(tutorial.id) && <p>Project: {getSubmission(tutorial.id).status}</p>}
                 <h3>{tutorial.title}</h3>
-                <p className="tutorial-category">{tutorial.category}</p>
+                <p className="tutorial-category">{tutorial.path || tutorial.category}</p>
                 <p className="tutorial-description">{tutorial.description}</p>
                 <div className="tutorial-meta">
                   <span className="duration">⏱️ {tutorial.duration} min</span>
+                  {tutorial.lessons && <span className="duration"> · 📖 {tutorial.lessons.length} lessons</span>}
                 </div>
+                {tutorial.skills && tutorial.skills.length > 0 && (
+                  <p className="tutorial-skills">Skills: {tutorial.skills.join(', ')}</p>
+                )}
                 <button 
                   className="btn-view"
                   onClick={() => setSelectedTutorial(tutorial)}
@@ -121,13 +125,45 @@ const Tutorials = () => {
             </div>
             <p className="description">{selectedTutorial.description}</p>
             <div className="content">
-              <h3>Course Content</h3>
+              <h3>About this path</h3>
               <p>{selectedTutorial.content}</p>
             </div>
+
+            {selectedTutorial.lessons && selectedTutorial.lessons.length > 0 && (
+              <div className="content">
+                <h3>Lessons</h3>
+                {selectedTutorial.lessons.map((lesson, index) => (
+                  <details key={index} className="lesson">
+                    <summary>Lesson {index + 1}: {lesson.title}</summary>
+                    <p>{lesson.content}</p>
+                    {lesson.code && <pre className="lesson-code">{lesson.code}</pre>}
+                  </details>
+                ))}
+              </div>
+            )}
+
             <div className="content">
               <h3>Your project</h3>
               <p>{selectedTutorial.projectBrief}</p>
             </div>
+
+            {selectedTutorial.rubric && selectedTutorial.rubric.length > 0 && (
+              <div className="content">
+                <h3>How the facilitator will check it</h3>
+                <ul className="rubric-list">
+                  {selectedTutorial.rubric.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {selectedTutorial.skills && selectedTutorial.skills.length > 0 && (
+              <div className="content">
+                <h3>Skills your certificate will show</h3>
+                <p>{selectedTutorial.skills.join(', ')}</p>
+              </div>
+            )}
             {(() => {
               const last = getSubmission(selectedTutorial.id);
               if (last && last.status === 'approved') {

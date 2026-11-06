@@ -57,6 +57,14 @@ const FacilitatorDashboard = () => {
             <p><strong>{s.tutorialTitle}</strong></p>
             <p>Project: <a href={s.projectLink} target="_blank" rel="noreferrer">{s.projectLink}</a></p>
             {s.notes && <p>Notes: {s.notes}</p>}
+            {s.rubric && s.rubric.length > 0 && s.status === 'pending' && (
+              <div>
+                <p><strong>Check that:</strong></p>
+                <ul className="pg-list">
+                  {s.rubric.map((item, index) => <li key={index}>{item}</li>)}
+                </ul>
+              </div>
+            )}
             {s.feedback && <p>Feedback: {s.feedback}</p>}
 
             {s.status === 'pending' && (

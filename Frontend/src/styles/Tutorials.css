@@ -256,3 +256,41 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.tutorial-skills {
+  color: #667eea;
+  font-size: 0.9rem;
+  margin: 8px 0;
+}
+
+.lesson {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 8px 0;
+}
+
+.lesson summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+}
+
+.lesson p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.lesson-code {
+  background: #1e1e2e;
+  color: #e6e6f0;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+.rubric-list {
+  padding-left: 20px;
+  line-height: 1.7;
+}

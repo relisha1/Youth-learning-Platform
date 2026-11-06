@@ -165,7 +165,7 @@ router.get('/tutorials', (req, res) => {
 // @access  Private (Admin only)
 router.post('/tutorials', (req, res) => {
   try {
-    const { title, description, category, content, projectBrief, level, duration, image } = req.body;
+    const { title, description, category, content, projectBrief, level, duration, image, path, lessons, rubric, skills } = req.body;
 
     if (!title || !description || !category) {
       return res.status(400).json({
@@ -180,6 +180,10 @@ router.post('/tutorials', (req, res) => {
       category,
       content: content || '',
       projectBrief: projectBrief || 'Make a small project that uses what you learned in this tutorial. Put it on GitHub and send the link.',
+      path: path || category,
+      lessons: Array.isArray(lessons) ? lessons : [],
+      rubric: Array.isArray(rubric) ? rubric : [],
+      skills: Array.isArray(skills) ? skills : [],
       level: level || 'beginner',
       duration: duration || 0,
       image: image || '',

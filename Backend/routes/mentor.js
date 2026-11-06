@@ -19,7 +19,12 @@ router.get('/submissions', (req, res) => {
   if (req.query.status) {
     submissions = submissions.filter(s => s.status === req.query.status);
   }
-  res.json({ success: true, data: submissions });
+  // add the checklist of the tutorial so the facilitator can see what to look for
+  const list = submissions.map(s => {
+    const tutorial = db.findById('tutorials', s.tutorialId);
+    return { ...s, rubric: tutorial && tutorial.rubric ? tutorial.rubric : [], projectBrief: tutorial ? tutorial.projectBrief : '' };
+  });
+  res.json({ success: true, data: list });
 });
 
 // PUT /api/mentor/submissions/:id - approve or reject a project
