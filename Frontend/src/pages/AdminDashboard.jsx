@@ -28,6 +28,7 @@ const AdminDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
+  const [report, setReport] = useState(null);
   const [newTutorial, setNewTutorial] = useState({ title: '', description: '', category: '', content: '', projectBrief: '', lessonsText: '', rubricText: '', skillsText: '', level: 'beginner' });
   const [newInternship, setNewInternship] = useState({ title: '', description: '', company: '', duration: '' });
 
@@ -94,6 +95,35 @@ const AdminDashboard = () => {
       loadData();
     } catch (err) {
       setLoginError(err.response?.data?.message || 'Login failed');
+    }
+  };
+
+  // the report is loaded when its tab is opened
+  useEffect(() => {
+    if (activeTab !== 'report' || !isLoggedIn) return;
+    const loadReport = async () => {
+      try {
+        const res = await adminAPI.getReport();
+        setReport(res.data.data);
+      } catch (err) {
+        setLoadError(err.response?.data?.message || 'Could not load the report');
+      }
+    };
+    loadReport();
+  }, [activeTab, isLoggedIn]);
+
+  // downloads the report as a CSV file for Excel
+  const handleDownloadReport = async () => {
+    try {
+      const res = await adminAPI.getReportCsv();
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pilot-report.csv';
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Could not download the report');
     }
   };
 
@@ -259,6 +289,7 @@ const AdminDashboard = () => {
         <button className={activeTab === 'tutorials' ? 'active' : ''} onClick={() => setActiveTab('tutorials')}>Tutorials</button>
         <button className={activeTab === 'internships' ? 'active' : ''} onClick={() => setActiveTab('internships')}>Internships</button>
         <button className={activeTab === 'applications' ? 'active' : ''} onClick={() => setActiveTab('applications')}>Applications</button>
+        <button className={activeTab === 'report' ? 'active' : ''} onClick={() => setActiveTab('report')}>Report</button>
       </div>
 
       <div className="admin-content">
@@ -434,8 +465,8 @@ const AdminDashboard = () => {
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>User</th>
-                    <th>Type</th>
+                    <th>Learner</th>
+                    <th>Job</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -443,13 +474,13 @@ const AdminDashboard = () => {
                 <tbody>
                   {applications.map((app) => (
                     <tr key={app.id}>
-                      <td>{app.userId}</td>
-                      <td>{app.type}</td>
+                      <td>{app.learnerName || app.userId}</td>
+                      <td>{(internships.find(job => job.id === app.internshipId) || {}).title || '-'}</td>
                       <td>{app.status}</td>
                       <td>
                         <select value={app.status} onChange={(e) => handleUpdateApplicationStatus(app.id, e.target.value)} className="status-select">
                           <option value="pending">Pending</option>
-                          <option value="approved">Approved</option>
+                          <option value="accepted">Accepted</option>
                           <option value="rejected">Rejected</option>
                         </select>
                       </td>
@@ -457,6 +488,92 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'report' && (
+          <div className="tab-content">
+            <h2>Pilot report</h2>
+            {!report ? (
+              <p>Loading the report...</p>
+            ) : (
+              <div>
+                <p>Numbers made on {new Date(report.generatedAt).toLocaleString()}</p>
+                <button className="refresh-btn" onClick={handleDownloadReport}>Download as CSV (Excel)</button>
+
+                <h3 style={{ marginTop: '24px' }}>People</h3>
+                <div className="stats-grid">
+                  <div className="stat-card"><div className="stat-value">{report.people.learners}</div><div className="stat-label">Learners</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.people.learnersWhoSentAProject}</div><div className="stat-label">Sent a project</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.people.learnersWithCertificate}</div><div className="stat-label">Have a certificate</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.people.facilitators}</div><div className="stat-label">Facilitators</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.people.employers}</div><div className="stat-label">Employers</div></div>
+                </div>
+
+                <h3>Projects and certificates</h3>
+                <div className="stats-grid">
+                  <div className="stat-card"><div className="stat-value">{report.projects.sent}</div><div className="stat-label">Projects sent</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.projects.approved}</div><div className="stat-label">Approved</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.projects.approvalRatePercent}%</div><div className="stat-label">Approval rate</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.projects.averageDaysToCheck}</div><div className="stat-label">Days to check (average)</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.certificatesIssued}</div><div className="stat-label">Certificates</div></div>
+                </div>
+
+                <h3>Jobs</h3>
+                <div className="stats-grid">
+                  <div className="stat-card"><div className="stat-value">{report.jobs.posted}</div><div className="stat-label">Jobs posted</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.applications}</div><div className="stat-label">Applications</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.applicantsWithCertificate}</div><div className="stat-label">Applicants with a certificate</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.accepted}</div><div className="stat-label">Accepted by employers</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.acceptedPercent}%</div><div className="stat-label">Accepted rate</div></div>
+                </div>
+
+                <h3>Mentoring</h3>
+                <p>{report.mentoring.requests} requests: {report.mentoring.accepted} accepted, {report.mentoring.declined} declined, {report.mentoring.waiting} waiting.</p>
+
+                <h3>Learning paths</h3>
+                <table className="admin-table">
+                  <thead>
+                    <tr><th>Path</th><th>Sent</th><th>Approved</th><th>Sent back</th><th>Waiting</th><th>Certificates</th></tr>
+                  </thead>
+                  <tbody>
+                    {report.paths.map(p => (
+                      <tr key={p.title}>
+                        <td>{p.title}</td><td>{p.sent}</td><td>{p.approved}</td><td>{p.sentBack}</td><td>{p.waiting}</td><td>{p.certificates}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <h3 style={{ marginTop: '24px' }}>Jobs</h3>
+                {report.jobList.length === 0 ? <p>No jobs yet.</p> : (
+                  <table className="admin-table">
+                    <thead>
+                      <tr><th>Job</th><th>Company</th><th>Applications</th><th>Accepted</th></tr>
+                    </thead>
+                    <tbody>
+                      {report.jobList.map((j, i) => (
+                        <tr key={i}><td>{j.title}</td><td>{j.company}</td><td>{j.applications}</td><td>{j.accepted}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+
+                <h3 style={{ marginTop: '24px' }}>Last weeks</h3>
+                {report.weeks.length === 0 ? <p>No activity yet.</p> : (
+                  <table className="admin-table">
+                    <thead>
+                      <tr><th>Week starting</th><th>New learners</th><th>Projects sent</th><th>Certificates</th><th>Applications</th></tr>
+                    </thead>
+                    <tbody>
+                      {report.weeks.map(w => (
+                        <tr key={w.week}><td>{w.week}</td><td>{w.newLearners}</td><td>{w.projectsSent}</td><td>{w.certificates}</td><td>{w.applications}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
             )}
           </div>
         )}
