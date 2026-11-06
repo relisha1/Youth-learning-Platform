@@ -54,7 +54,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Check if user is already logged in
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
       loadData();
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
         setLoginError('This page is for admins only');
         return;
       }
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
       setUser(userData);
       setIsLoggedIn(true);
       setLoginEmail('');
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setIsLoggedIn(false);
     setUser(null);
     setUsers([]);
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
       await adminAPI.approveUser(user.id, user.approved === false);
       loadData();
     } catch (err) {
-      alert('Could not change approval');
+      alert(err.response?.data?.message || 'Could not change approval');
     }
   };
 
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
       await adminAPI.deleteUser(id);
       loadData();
     } catch (err) {
-      alert('Failed to delete user');
+      alert(err.response?.data?.message || 'Failed to delete user');
     }
   };
 

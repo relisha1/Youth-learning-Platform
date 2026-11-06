@@ -20,7 +20,7 @@ const MentorStudents = () => {
       // Get all mentorships for this mentor
       const response = await fetch('http://localhost:5000/api/mentorships?mentorId=' + user?.id, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
       });
       
@@ -34,7 +34,7 @@ const MentorStudents = () => {
       for (const mentorship of mentorships) {
         const studentRes = await fetch(`http://localhost:5000/api/users/${mentorship.studentId}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
           }
         });
         if (studentRes.ok) {
