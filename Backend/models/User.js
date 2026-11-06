@@ -1,7 +1,21 @@
 const bcrypt = require('bcryptjs');
 const db = require('./database.js');
 
+// take the secret fields out before a user is sent anywhere
+function clean(user) {
+  if (!user) return user;
+  delete user.password;
+  delete user.resetHash;
+  delete user.resetExpires;
+  delete user.verifyHash;
+  return user;
+}
+
 class User {
+  static clean(user) {
+    return clean(user);
+  }
+
   // Create new user
   static async create(userData) {
     try {
@@ -33,9 +47,7 @@ class User {
       // Insert into database
       const user = db.insert('users', newUser);
       
-      // Remove password from returned object
-      delete user.password;
-      return user;
+      return clean(user);
     } catch (error) {
       throw error;
     }
@@ -43,11 +55,7 @@ class User {
 
   // Find user by ID
   static findById(id) {
-    const user = db.findById('users', id);
-    if (user) {
-      delete user.password;
-    }
-    return user;
+    return clean(db.findById('users', id));
   }
 
   // Find user by email
@@ -72,11 +80,7 @@ class User {
       delete updates.password;
     }
     
-    const user = db.update('users', id, updates);
-    if (user) {
-      delete user.password;
-    }
-    return user;
+    return clean(db.update('users', id, updates));
   }
 
   // Change password
@@ -102,19 +106,13 @@ class User {
   // Get all users by role
   static getAllByRole(role) {
     const users = db.findMany('users', { role });
-    return users.map(user => {
-      delete user.password;
-      return user;
-    });
+    return users.map(clean);
   }
 
   // Get all users (for admin)
   static getAll() {
     const users = db.getAll('users');
-    return users.map(user => {
-      delete user.password;
-      return user;
-    });
+    return users.map(clean);
   }
 
   // Delete user
@@ -133,10 +131,7 @@ class User {
       (user.bio && user.bio.toLowerCase().includes(searchLower))
     );
 
-    return results.map(user => {
-      delete user.password;
-      return user;
-    });
+    return results.map(clean);
   }
 
   // Get user statistics
