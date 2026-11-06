@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { mentorAPI } from '../services/api';
-import '../styles/Pages.css';
+import PageLayout from '../components/PageLayout';
 
 // page for facilitators: check the projects students sent
 const FacilitatorDashboard = () => {
-  const navigate = useNavigate();
   const [status, setStatus] = useState('pending');
   const [submissions, setSubmissions] = useState([]);
   const [feedback, setFeedback] = useState({});
@@ -38,40 +36,47 @@ const FacilitatorDashboard = () => {
     setFeedback({ ...feedback, [id]: text });
   };
 
+  const tabClass = (name) => (status === name ? 'pg-tab pg-tab-active' : 'pg-tab');
+
   return (
-    <div className="simple-page">
-      <button onClick={() => navigate('/dashboard')}>← Back</button>
-      <h1>Facilitator Page</h1>
-      <p>Open the project link, check the work, then approve it or ask for changes.</p>
-      {message && <p className="note">{message}</p>}
+    <PageLayout title="Check Projects" subtitle="Open the project link, check the work, then approve it or ask for changes.">
+      {message && <div className="pg-message">{message}</div>}
 
-      <button onClick={() => setStatus('pending')}>Waiting</button>{' '}
-      <button onClick={() => setStatus('approved')}>Approved</button>{' '}
-      <button onClick={() => setStatus('rejected')}>Sent back</button>
+      <div className="pg-tabs">
+        <button className={tabClass('pending')} onClick={() => setStatus('pending')}>Waiting</button>
+        <button className={tabClass('approved')} onClick={() => setStatus('approved')}>Approved</button>
+        <button className={tabClass('rejected')} onClick={() => setStatus('rejected')}>Sent back</button>
+      </div>
 
-      {submissions.length === 0 && <p>Nothing here.</p>}
+      {submissions.length === 0 && <div className="pg-empty">Nothing here.</div>}
 
-      {submissions.map(s => (
-        <div className="simple-card" key={s.id}>
-          <h3>{s.learnerName} - {s.tutorialTitle}</h3>
-          <p>Project: <a href={s.projectLink} target="_blank" rel="noreferrer">{s.projectLink}</a></p>
-          {s.notes && <p>Notes: {s.notes}</p>}
-          {s.feedback && <p>Feedback: {s.feedback}</p>}
+      <div className="pg-grid">
+        {submissions.map(s => (
+          <div className="pg-item" key={s.id}>
+            <h4>{s.learnerName}</h4>
+            <p><strong>{s.tutorialTitle}</strong></p>
+            <p>Project: <a href={s.projectLink} target="_blank" rel="noreferrer">{s.projectLink}</a></p>
+            {s.notes && <p>Notes: {s.notes}</p>}
+            {s.feedback && <p>Feedback: {s.feedback}</p>}
 
-          {s.status === 'pending' && (
-            <div>
-              <textarea
-                placeholder="Feedback (needed if you send it back)"
-                value={feedback[s.id] || ''}
-                onChange={(e) => handleFeedback(s.id, e.target.value)}
-              />
-              <button onClick={() => handleReview(s, 'approved')}>Approve</button>{' '}
-              <button onClick={() => handleReview(s, 'rejected')}>Send back</button>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
+            {s.status === 'pending' && (
+              <div>
+                <textarea
+                  className="pg-textarea"
+                  placeholder="Feedback (needed if you send it back)"
+                  value={feedback[s.id] || ''}
+                  onChange={(e) => handleFeedback(s.id, e.target.value)}
+                />
+                <div className="pg-buttons">
+                  <button className="pg-btn pg-btn-green" onClick={() => handleReview(s, 'approved')}>Approve</button>
+                  <button className="pg-btn pg-btn-red" onClick={() => handleReview(s, 'rejected')}>Send back</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </PageLayout>
   );
 };
 

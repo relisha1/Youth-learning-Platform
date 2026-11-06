@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { publicAPI } from '../services/api';
-import '../styles/Pages.css';
+import PageLayout from '../components/PageLayout';
 
 // anyone can type a certificate code here to see if it is real
 const Verify = () => {
@@ -22,24 +21,26 @@ const Verify = () => {
   };
 
   return (
-    <div className="simple-page">
-      <Link to="/">← Home</Link>
-      <h1>Check a Certificate</h1>
-      <form onSubmit={handleCheck} className="simple-form">
-        <input placeholder="Example: SB-4F9A2C" value={code} onChange={(e) => setCode(e.target.value)} />
-        <button type="submit">Check</button>
-      </form>
+    <PageLayout title="Check a Certificate" subtitle="Type the code from the learner's certificate">
+      <div className="pg-card">
+        <form onSubmit={handleCheck} className="pg-form">
+          <input placeholder="Example: SB-4F9A2C" value={code} onChange={(e) => setCode(e.target.value)} />
+          <button className="pg-btn" type="submit">Check</button>
+        </form>
+      </div>
 
-      {error && <p className="note">{error}</p>}
+      {error && <div className="pg-message">❌ {error}</div>}
+
       {result && (
-        <div className="simple-card">
+        <div className="pg-card">
           <h3>✅ This certificate is real</h3>
-          <p>Name: {result.learnerName}</p>
-          <p>Tutorial: {result.tutorialTitle}</p>
-          <p>Date: {new Date(result.issuedAt).toLocaleDateString()}</p>
+          <p><strong>Name:</strong> {result.learnerName}</p>
+          <p><strong>Tutorial:</strong> {result.tutorialTitle}</p>
+          {result.issuedBy && <p><strong>Given by facilitator:</strong> {result.issuedBy}</p>}
+          <p><strong>Date:</strong> {new Date(result.issuedAt).toLocaleDateString()}</p>
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

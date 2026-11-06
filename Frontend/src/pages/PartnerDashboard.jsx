@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { partnerAPI } from '../services/api';
-import '../styles/Pages.css';
+import PageLayout from '../components/PageLayout';
 
 // page for employers: post jobs, see applicants, see certified learners
 const PartnerDashboard = () => {
-  const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [applicants, setApplicants] = useState([]);
   const [openJob, setOpenJob] = useState(null);
@@ -102,78 +100,93 @@ const PartnerDashboard = () => {
   };
 
   return (
-    <div className="simple-page">
-      <button onClick={() => navigate('/dashboard')}>← Back</button>
-      <h1>Employer Page</h1>
-      {message && <p className="note">{message}</p>}
+    <PageLayout title="Employer Page" subtitle="Post jobs, read applications and find certified learners">
+      {message && <div className="pg-message">{message}</div>}
 
-      <h2>Your company</h2>
-      <p>This is shown on your jobs. It must be filled before you post.</p>
-      <form onSubmit={handleSaveProfile} className="simple-form">
-        <input name="companyName" placeholder="Company name" value={profile.companyName} onChange={handleProfileChange} />
-        <input name="website" placeholder="Website" value={profile.website} onChange={handleProfileChange} />
-        <textarea name="about" placeholder="What does your company do?" value={profile.about} onChange={handleProfileChange} />
-        <button type="submit">Save company info</button>
-      </form>
+      <div className="pg-card">
+        <h3>Your company</h3>
+        <p className="pg-muted">This is shown on your jobs. Fill it before you post.</p>
+        <form onSubmit={handleSaveProfile} className="pg-form">
+          <input name="companyName" placeholder="Company name" value={profile.companyName} onChange={handleProfileChange} />
+          <input name="website" placeholder="Website" value={profile.website} onChange={handleProfileChange} />
+          <textarea name="about" placeholder="What does your company do?" value={profile.about} onChange={handleProfileChange} />
+          <div><button className="pg-btn" type="submit">Save company info</button></div>
+        </form>
+      </div>
 
-      <h2>Post a job</h2>
-      <form onSubmit={handlePost} className="simple-form">
-        <input name="title" placeholder="Job title" value={form.title} onChange={handleChange} />
-        <input name="location" placeholder="Location (default Kigali)" value={form.location} onChange={handleChange} />
-        <select name="type" value={form.type} onChange={handleChange}>
-          <option value="internship">Internship</option>
-          <option value="job">Job</option>
-        </select>
-        <input name="skills" placeholder="Skills you want (example: JavaScript, Python)" value={form.skills} onChange={handleChange} />
-        <label>
-          Last day to apply: <input type="date" name="deadline" value={form.deadline} onChange={handleChange} />
-        </label>
-        <label>
-          <input type="checkbox" name="requiresCertificate" checked={form.requiresCertificate} onChange={handleChange} />
-          {' '}Only learners with a certificate can apply
-        </label>
-        <textarea name="description" placeholder="What is the job about?" value={form.description} onChange={handleChange} />
-        <button type="submit">Post job</button>
-      </form>
+      <div className="pg-card">
+        <h3>Post a job</h3>
+        <form onSubmit={handlePost} className="pg-form">
+          <input name="title" placeholder="Job title" value={form.title} onChange={handleChange} />
+          <input name="location" placeholder="Location (default Kigali)" value={form.location} onChange={handleChange} />
+          <select name="type" value={form.type} onChange={handleChange}>
+            <option value="internship">Internship</option>
+            <option value="job">Job</option>
+          </select>
+          <input name="skills" placeholder="Skills you want (example: JavaScript, Python)" value={form.skills} onChange={handleChange} />
+          <label>
+            Last day to apply:
+            <input type="date" name="deadline" value={form.deadline} onChange={handleChange} />
+          </label>
+          <label>
+            <input type="checkbox" name="requiresCertificate" checked={form.requiresCertificate} onChange={handleChange} />
+            Only learners with a certificate can apply
+          </label>
+          <textarea name="description" placeholder="What is the job about?" value={form.description} onChange={handleChange} />
+          <div><button className="pg-btn" type="submit">Post job</button></div>
+        </form>
+      </div>
 
-      <h2>My jobs</h2>
-      {jobs.length === 0 && <p>You have not posted any job yet.</p>}
-      {jobs.map(job => (
-        <div className="simple-card" key={job.id}>
-          <h3>{job.title} ({job.status})</h3>
-          <p>{job.applicants} applicants{job.deadline && ' · last day ' + job.deadline}</p>
-          <button onClick={() => showApplicants(job)}>See applicants</button>{' '}
-          <button onClick={() => handleClose(job)}>{job.status === 'open' ? 'Close' : 'Open again'}</button>{' '}
-          <button onClick={() => handleDelete(job)}>Delete</button>
-        </div>
-      ))}
+      <h3 className="pg-section-title">My jobs</h3>
+      {jobs.length === 0 && <div className="pg-empty">You have not posted any job yet.</div>}
+      <div className="pg-grid">
+        {jobs.map(job => (
+          <div className="pg-item" key={job.id}>
+            <span className={job.status === 'open' ? 'pg-badge pg-badge-green' : 'pg-badge pg-badge-red'}>{job.status}</span>
+            <h4>{job.title}</h4>
+            <p>{job.applicants} applicants{job.deadline && ' · last day ' + job.deadline}</p>
+            <div className="pg-buttons">
+              <button className="pg-btn" onClick={() => showApplicants(job)}>See applicants</button>
+              <button className="pg-btn pg-btn-light" onClick={() => handleClose(job)}>{job.status === 'open' ? 'Close' : 'Open again'}</button>
+              <button className="pg-btn pg-btn-red" onClick={() => handleDelete(job)}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {openJob && (
         <div>
-          <h2>Applicants for {openJob.title}</h2>
-          {applicants.length === 0 && <p>No applicants yet.</p>}
-          {applicants.map(a => (
-            <div className="simple-card" key={a.id}>
-              <h3>{a.learnerName} ({a.status})</h3>
-              <p>{a.message}</p>
-              <p>Certificates: {a.certificates.length === 0 ? 'none' : a.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
-              <button onClick={() => handleStatus(a, 'accepted')}>Accept</button>{' '}
-              <button onClick={() => handleStatus(a, 'rejected')}>Reject</button>
-            </div>
-          ))}
+          <h3 className="pg-section-title">Applicants for {openJob.title}</h3>
+          {applicants.length === 0 && <div className="pg-empty">No applicants yet.</div>}
+          <div className="pg-grid">
+            {applicants.map(a => (
+              <div className="pg-item" key={a.id}>
+                <h4>{a.learnerName}</h4>
+                <span className={a.status === 'accepted' ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
+                <p>{a.message}</p>
+                <p>🏆 {a.certificates.length === 0 ? 'No certificates' : a.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
+                <div className="pg-buttons">
+                  <button className="pg-btn pg-btn-green" onClick={() => handleStatus(a, 'accepted')}>Accept</button>
+                  <button className="pg-btn pg-btn-red" onClick={() => handleStatus(a, 'rejected')}>Reject</button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      <h2>Learners with certificates</h2>
-      <p>You can check any code on the <a href="/verify">Verify page</a>.</p>
-      {learners.length === 0 && <p>No learner has a certificate yet.</p>}
-      {learners.map(l => (
-        <div className="simple-card" key={l.id}>
-          <h3>{l.name}</h3>
-          <p>{l.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
-        </div>
-      ))}
-    </div>
+      <h3 className="pg-section-title">Learners with certificates</h3>
+      <p className="pg-muted">You can check any code on the <a href="/verify">Verify page</a>.</p>
+      {learners.length === 0 && <div className="pg-empty">No learner has a certificate yet.</div>}
+      <div className="pg-grid">
+        {learners.map(l => (
+          <div className="pg-item" key={l.id}>
+            <h4>{l.name}</h4>
+            <p>{l.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
+          </div>
+        ))}
+      </div>
+    </PageLayout>
   );
 };
 

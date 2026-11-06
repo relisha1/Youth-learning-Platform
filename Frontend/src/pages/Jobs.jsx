@@ -1,61 +1,81 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { publicAPI, learnerAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import '../styles/Pages.css';
+import PageLayout from '../components/PageLayout';
 
 // list of open jobs, students can apply
 const Jobs = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [message, setMessage] = useState('');
+  const [applyingTo, setApplyingTo] = useState(null);
+  const [text, setText] = useState('');
 
   useEffect(() => {
-    const loadJobs = async () => {
-      try {
-        const res = await publicAPI.getJobs();
-        setJobs(res.data.data.filter(job => job.status !== 'closed'));
-      } catch (err) {
-        setMessage('Could not load jobs');
-      }
-    };
     loadJobs();
   }, []);
 
+  const loadJobs = async () => {
+    try {
+      const res = await publicAPI.getJobs();
+      setJobs(res.data.data.filter(job => job.status !== 'closed'));
+    } catch (err) {
+      setMessage('Could not load jobs');
+    }
+  };
+
   const handleApply = async (job) => {
-    const text = window.prompt('Write a short message to ' + job.company);
-    if (text === null) return;
     try {
       await learnerAPI.apply(job.id, text);
       setMessage('You applied for ' + job.title);
+      setApplyingTo(null);
+      setText('');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Could not apply');
     }
   };
 
   return (
-    <div className="simple-page">
-      <button onClick={() => navigate('/dashboard')}>← Back</button>
-      <h1>Jobs and Internships</h1>
-      {message && <p className="note">{message}</p>}
+    <PageLayout title="Jobs and Internships" subtitle="Open positions from employers">
+      {message && <div className="pg-message">{message}</div>}
 
-      {jobs.length === 0 && <p>No jobs yet.</p>}
+      {jobs.length === 0 && <div className="pg-empty">No jobs yet.</div>}
 
-      {jobs.map(job => (
-        <div className="simple-card" key={job.id}>
-          <h3>{job.title}</h3>
-          <p><strong>{job.company}</strong> · {job.location} · {job.type}</p>
-          <p>{job.description}</p>
-          {job.skills && <p>Skills: {job.skills}</p>}
-          {job.deadline && <p>Last day to apply: {job.deadline}</p>}
-          {job.requiresCertificate && <p>You need at least one certificate to apply.</p>}
-          {user?.role === 'student' && (
-            <button onClick={() => handleApply(job)}>Apply</button>
-          )}
-        </div>
-      ))}
-    </div>
+      <div className="pg-grid">
+        {jobs.map(job => (
+          <div className="pg-item" key={job.id}>
+            <span className="pg-badge">{job.type}</span>
+            <h4>{job.title}</h4>
+            <p><strong>{job.company}</strong> · {job.location}</p>
+            <p>{job.description}</p>
+            {job.skills && <p>Skills: {job.skills}</p>}
+            {job.deadline && <p>Last day to apply: {job.deadline}</p>}
+            {job.requiresCertificate && <p>🏆 You need at least one certificate to apply.</p>}
+
+            {user?.role === 'student' && applyingTo !== job.id && (
+              <div className="pg-buttons">
+                <button className="pg-btn" onClick={() => setApplyingTo(job.id)}>Apply</button>
+              </div>
+            )}
+
+            {applyingTo === job.id && (
+              <div>
+                <textarea
+                  className="pg-textarea"
+                  placeholder={'Write a short message to ' + job.company}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                />
+                <div className="pg-buttons">
+                  <button className="pg-btn pg-btn-green" onClick={() => handleApply(job)}>Send application</button>
+                  <button className="pg-btn pg-btn-light" onClick={() => setApplyingTo(null)}>Cancel</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </PageLayout>
   );
 };
 
