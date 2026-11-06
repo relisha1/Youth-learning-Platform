@@ -348,7 +348,7 @@ const AdminDashboard = () => {
                     <tr key={user.id}>
                       <td>{user.name}</td>
                       <td>{user.email}</td>
-                      <td><span className={`role-badge ${user.role || ''}`}>{(user.role || '').toUpperCase()}</span></td>
+                      <td><span className={`role-badge ${user.role || ''}`}>{user.role === 'mentor' ? 'FACILITATOR' : user.role === 'partner' ? 'EMPLOYER' : (user.role || '').toUpperCase()}</span></td>
                       <td><span className={`status ${user.isActive ? 'active' : 'inactive'}`}>{user.isActive ? 'Active' : 'Inactive'}</span>{user.approved === false && ' (waiting for approval)'}</td>
                       <td>
                         <div className="actions">

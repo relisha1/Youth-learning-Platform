@@ -116,8 +116,8 @@ const Register = () => {
               required
             >
               <option value="student">Student (Learning to code)</option>
-              <option value="mentor">Mentor (Helping others)</option>
-              <option value="partner">Internship Partner (Hiring)</option>
+              <option value="mentor">Facilitator / Mentor (Helping others)</option>
+              <option value="partner">Employer (Hiring)</option>
             </select>
           </div>
 
