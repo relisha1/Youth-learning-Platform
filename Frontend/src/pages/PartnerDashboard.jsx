@@ -7,6 +7,7 @@ const PartnerDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [applicants, setApplicants] = useState([]);
   const [openJob, setOpenJob] = useState(null);
+  const [allApps, setAllApps] = useState([]);
   const [learners, setLearners] = useState([]);
   const [message, setMessage] = useState('');
   const emptyJob = { title: '', description: '', location: '', type: 'internship', skills: '', deadline: '', requiresCertificate: false };
@@ -17,7 +18,17 @@ const PartnerDashboard = () => {
     loadProfile();
     loadJobs();
     loadLearners();
+    loadApplications();
   }, []);
+
+  const loadApplications = async () => {
+    try {
+      const res = await partnerAPI.getAllApplications();
+      setAllApps(res.data.data);
+    } catch (err) {
+      setMessage('Could not load applications');
+    }
+  };
 
   const loadProfile = async () => {
     try {
@@ -96,12 +107,31 @@ const PartnerDashboard = () => {
 
   const handleStatus = async (application, status) => {
     await partnerAPI.setStatus(application.id, status);
-    showApplicants(openJob);
+    loadApplications();
+    if (openJob) showApplicants(openJob);
   };
 
   return (
     <PageLayout title="Employer Page" subtitle="Post jobs, read applications and find certified learners">
       {message && <div className="pg-message">{message}</div>}
+
+      <h3 className="pg-section-title">Applications ({allApps.filter(a => a.status === 'pending').length} waiting)</h3>
+      {allApps.length === 0 && <div className="pg-empty">No one has applied to your jobs yet. When a learner applies, it shows here.</div>}
+      <div className="pg-grid">
+        {allApps.map(a => (
+          <div className="pg-item" key={a.id}>
+            <h4>{a.learnerName}</h4>
+            <p>Applied for: {a.jobTitle}</p>
+            <span className={a.status === 'accepted' ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
+            <p>{a.message}</p>
+            <p>🏆 {a.certificates.length === 0 ? 'No certificates' : a.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
+            <div className="pg-buttons">
+              <button className="pg-btn pg-btn-green" onClick={() => handleStatus(a, 'accepted')}>Accept</button>
+              <button className="pg-btn pg-btn-red" onClick={() => handleStatus(a, 'rejected')}>Reject</button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="pg-card">
         <h3>Your company</h3>

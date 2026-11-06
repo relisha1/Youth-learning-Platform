@@ -70,6 +70,7 @@ export const partnerAPI = {
   postJob: (job) => api.post('/partner/jobs', job),
   updateJob: (id, updates) => api.put(`/partner/jobs/${id}`, updates),
   deleteJob: (id) => api.delete(`/partner/jobs/${id}`),
+  getAllApplications: () => api.get('/partner/applications'),
   getApplicants: (id) => api.get(`/partner/jobs/${id}/applicants`),
   setStatus: (appId, status) => api.put(`/partner/applications/${appId}`, { status }),
   getLearners: () => api.get('/partner/learners'),
