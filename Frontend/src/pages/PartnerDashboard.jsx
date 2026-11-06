@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { partnerAPI } from '../services/api';
 import PageLayout from '../components/PageLayout';
+import ApplicationCard from '../components/ApplicationCard';
 
 // page for employers: post jobs, see applicants, see certified learners
 const PartnerDashboard = () => {
@@ -147,18 +148,7 @@ const PartnerDashboard = () => {
       {loaded && allApps.length === 0 && <div className="pg-empty">No one has applied to your jobs yet. When a learner applies, it shows here.</div>}
       <div className="pg-grid">
         {allApps.map(a => (
-          <div className="pg-item" key={a.id}>
-            <h4>{a.learnerName}</h4>
-            <p>Applied for: {a.jobTitle}</p>
-            <span className={(a.status === 'accepted' || a.status === 'hired') ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
-            <p>{a.message}</p>
-            <p>🏆 {a.certificates.length === 0 ? 'No certificates' : a.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
-            <div className="pg-buttons">
-              <button className="pg-btn pg-btn-green" onClick={() => handleStatus(a, 'accepted')}>Accept</button>
-              <button className="pg-btn" onClick={() => handleStatus(a, 'hired')}>Mark as hired</button>
-              <button className="pg-btn pg-btn-red" onClick={() => handleStatus(a, 'rejected')}>Reject</button>
-            </div>
-          </div>
+          <ApplicationCard key={a.id} a={a} onStatus={handleStatus} onChanged={loadApplications} onMessage={setMessage} />
         ))}
       </div>
 
@@ -221,17 +211,7 @@ const PartnerDashboard = () => {
           {applicants.length === 0 && <div className="pg-empty">No applicants yet.</div>}
           <div className="pg-grid">
             {applicants.map(a => (
-              <div className="pg-item" key={a.id}>
-                <h4>{a.learnerName}</h4>
-                <span className={(a.status === 'accepted' || a.status === 'hired') ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
-                <p>{a.message}</p>
-                <p>🏆 {a.certificates.length === 0 ? 'No certificates' : a.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
-                <div className="pg-buttons">
-                  <button className="pg-btn pg-btn-green" onClick={() => handleStatus(a, 'accepted')}>Accept</button>
-                  <button className="pg-btn" onClick={() => handleStatus(a, 'hired')}>Mark as hired</button>
-                  <button className="pg-btn pg-btn-red" onClick={() => handleStatus(a, 'rejected')}>Reject</button>
-                </div>
-              </div>
+              <ApplicationCard key={a.id} a={a} onStatus={handleStatus} onChanged={() => { loadApplications(); showApplicants(openJob); }} onMessage={setMessage} />
             ))}
           </div>
         </div>
