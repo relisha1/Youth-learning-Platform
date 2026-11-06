@@ -252,21 +252,21 @@ const AdminDashboard = () => {
           <div className="tab-content">
             <h2>Statistics</h2>
             <div className="stats-grid">
-              <div className="stat-card">
+              <div className="stat-card" onClick={() => setActiveTab('users')}>
                 <div className="stat-value">{stats?.totalUsers || 0}</div>
-                <div className="stat-label">Total Users</div>
+                <div className="stat-label">Total Users →</div>
               </div>
-              <div className="stat-card">
+              <div className="stat-card" onClick={() => setActiveTab('tutorials')}>
                 <div className="stat-value">{stats?.totalTutorials || 0}</div>
-                <div className="stat-label">Tutorials</div>
+                <div className="stat-label">Tutorials →</div>
               </div>
-              <div className="stat-card">
+              <div className="stat-card" onClick={() => setActiveTab('internships')}>
                 <div className="stat-value">{stats?.totalInternships || 0}</div>
-                <div className="stat-label">Internships</div>
+                <div className="stat-label">Internships →</div>
               </div>
-              <div className="stat-card">
+              <div className="stat-card" onClick={() => setActiveTab('applications')}>
                 <div className="stat-value">{stats?.totalApplications || 0}</div>
-                <div className="stat-label">Applications</div>
+                <div className="stat-label">Applications →</div>
               </div>
             </div>
           </div>
