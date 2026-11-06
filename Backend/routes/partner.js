@@ -140,7 +140,22 @@ router.get('/jobs/:id/applicants', (req, res) => {
   res.json({ success: true, data: list });
 });
 
-// PUT /api/partner/applications/:id - accept or reject an applicant
+// finds an application and checks that it is for one of my jobs
+function getMyApplication(req, res) {
+  const application = db.findById('applications', req.params.id);
+  if (!application) {
+    res.status(404).json({ success: false, message: 'Application not found' });
+    return null;
+  }
+  const job = db.findById('internships', application.internshipId);
+  if (!job || (req.user.role !== 'admin' && String(job.postedBy) !== String(req.user.id))) {
+    res.status(403).json({ success: false, message: 'This is not your job' });
+    return null;
+  }
+  return { application, job };
+}
+
+// PUT /api/partner/applications/:id - shortlist (accepted), reject or mark as hired
 router.put('/applications/:id', (req, res) => {
   const { status } = req.body;
   const allowed = ['pending', 'accepted', 'rejected', 'hired'];
@@ -148,26 +163,70 @@ router.put('/applications/:id', (req, res) => {
     return res.status(400).json({ success: false, message: 'Status must be pending, accepted, rejected or hired' });
   }
 
-  const application = db.findById('applications', req.params.id);
-  if (!application) {
-    return res.status(404).json({ success: false, message: 'Application not found' });
-  }
+  const found = getMyApplication(req, res);
+  if (!found) return;
+  const { application, job } = found;
 
-  // the job must be one of mine
-  const job = db.findById('internships', application.internshipId);
-  if (!job || (req.user.role !== 'admin' && String(job.postedBy) !== String(req.user.id))) {
-    return res.status(403).json({ success: false, message: 'This is not your job' });
-  }
+  // a hire only counts after the learner confirms it (hireConfirmed becomes true)
+  const updated = db.update('applications', application.id, { status, hireConfirmed: null });
 
-  const updated = db.update('applications', application.id, { status });
-  if (status === 'accepted' || status === 'rejected' || status === 'hired') {
-    const text = status === 'hired'
-      ? 'Congratulations! ' + job.company + ' chose you for ' + job.title
-      : 'Your application for ' + job.title + ' at ' + job.company + ' was ' + status;
-    const title = status === 'hired' ? 'You got the job! 🎉' : 'Job application ' + status;
-    notify(application.userId, title, text, '/my-certificates', true);
+  const chatLink = '/application-chat/' + application.id;
+  if (status === 'accepted') {
+    notify(application.userId, 'You were shortlisted',
+      job.company + ' shortlisted you for ' + job.title + '. Open the chat to talk with them.', chatLink, true);
+  } else if (status === 'rejected') {
+    notify(application.userId, 'Application not selected',
+      job.company + ' did not select you for ' + job.title + '. Keep going, try other jobs.', '/my-certificates', true);
+  } else if (status === 'hired') {
+    notify(application.userId, 'You got the job! 🎉',
+      'Congratulations! ' + job.company + ' chose you for ' + job.title + '. Please confirm it on My Certificates.', '/my-certificates', true);
   }
   res.json({ success: true, message: 'Application updated', data: updated });
+});
+
+// PUT /api/partner/applications/:id/interview - write the interview date and place
+router.put('/applications/:id/interview', (req, res) => {
+  const found = getMyApplication(req, res);
+  if (!found) return;
+  const { application, job } = found;
+
+  if (application.status !== 'accepted' && application.status !== 'hired') {
+    return res.status(400).json({ success: false, message: 'Shortlist the learner first' });
+  }
+
+  const note = String(req.body.note || '').trim().slice(0, 300);
+  if (!note) {
+    return res.status(400).json({ success: false, message: 'Write the date, time and place first' });
+  }
+
+  const updated = db.update('applications', application.id, { interviewNote: note });
+  notify(application.userId, 'Interview details',
+    job.company + ' (' + job.title + '): ' + note, '/application-chat/' + application.id, true);
+  res.json({ success: true, message: 'The learner was told', data: updated });
+});
+
+// POST /api/partner/applications/:id/feedback - after a confirmed hire: was the learner really ready?
+router.post('/applications/:id/feedback', (req, res) => {
+  const found = getMyApplication(req, res);
+  if (!found) return;
+  const { application } = found;
+
+  if (application.status !== 'hired' || application.hireConfirmed !== true) {
+    return res.status(400).json({ success: false, message: 'You can give feedback after the learner confirmed the job' });
+  }
+
+  const rating = Number(req.body.rating);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return res.status(400).json({ success: false, message: 'The rating must be from 1 to 5' });
+  }
+
+  const feedback = {
+    rating,
+    comment: String(req.body.comment || '').trim().slice(0, 500),
+    at: new Date().toISOString()
+  };
+  const updated = db.update('applications', application.id, { feedback });
+  res.json({ success: true, message: 'Thank you for your feedback', data: updated });
 });
 
 // GET /api/partner/learners - learners who have certificates (the talent list)
