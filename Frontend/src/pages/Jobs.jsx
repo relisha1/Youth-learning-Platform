@@ -14,6 +14,8 @@ const Jobs = () => {
   const [type, setType] = useState('all');
   const [onlyOpenToAll, setOnlyOpenToAll] = useState(false);
   const [appliedIds, setAppliedIds] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     loadJobs();
@@ -36,6 +38,7 @@ const Jobs = () => {
         setAppliedIds([]);
       }
     }
+    setLoaded(true);
   };
 
   // jobs that match the search box and the filters
@@ -49,6 +52,7 @@ const Jobs = () => {
   });
 
   const handleApply = async (job) => {
+    setSending(true);
     try {
       await learnerAPI.apply(job.id, text);
       setMessage('You applied for ' + job.title);
@@ -58,6 +62,7 @@ const Jobs = () => {
     } catch (err) {
       setMessage(err.response?.data?.message || 'Could not apply');
     }
+    setSending(false);
   };
 
   return (
@@ -77,7 +82,8 @@ const Jobs = () => {
         </label>
       </div>
 
-      {jobs.length === 0 && <div className="pg-empty">No jobs yet.</div>}
+      {!loaded && <div className="pg-empty">Loading jobs...</div>}
+      {loaded && jobs.length === 0 && <div className="pg-empty">No jobs yet.</div>}
       {jobs.length > 0 && shownJobs.length === 0 && <div className="pg-empty">No job matches your search.</div>}
 
       <div className="pg-grid">
@@ -110,7 +116,7 @@ const Jobs = () => {
                   onChange={(e) => setText(e.target.value)}
                 />
                 <div className="pg-buttons">
-                  <button className="pg-btn pg-btn-green" onClick={() => handleApply(job)}>Send application</button>
+                  <button className="pg-btn pg-btn-green" onClick={() => handleApply(job)} disabled={sending}>{sending ? 'Sending...' : 'Send application'}</button>
                   <button className="pg-btn pg-btn-light" onClick={() => setApplyingTo(null)}>Cancel</button>
                 </div>
               </div>

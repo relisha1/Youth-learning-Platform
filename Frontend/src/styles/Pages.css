@@ -366,3 +366,44 @@ a.pg-btn {
   border-radius: 8px;
   font-size: 1rem;
 }
+
+/* the company box and the post-a-job box side by side on a big screen */
+.pg-two {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 30px;
+}
+
+.pg-two .pg-card {
+  margin-bottom: 0;
+}
+
+.pg-two .pg-form {
+  max-width: none;
+}
+
+@media (min-width: 900px) {
+  .pg-two {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* links inside the pages use the site colour instead of the default blue */
+.pg a:not(.pg-btn):not(.pg-header-btn) {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.pg a:not(.pg-btn):not(.pg-header-btn):hover {
+  color: #764ba2;
+}
+
+/* buttons that are busy */
+.pg-btn:disabled,
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

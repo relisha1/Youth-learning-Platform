@@ -9,6 +9,8 @@ const PartnerDashboard = () => {
   const [openJob, setOpenJob] = useState(null);
   const [allApps, setAllApps] = useState([]);
   const [search, setSearch] = useState('');
+  const [posting, setPosting] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [learners, setLearners] = useState([]);
   const [message, setMessage] = useState('');
   const emptyJob = { title: '', description: '', location: '', type: 'internship', skills: '', deadline: '', requiresCertificate: false };
@@ -29,6 +31,7 @@ const PartnerDashboard = () => {
     } catch (err) {
       setMessage('Could not load applications');
     }
+    setLoaded(true);
   };
 
   const loadProfile = async () => {
@@ -79,6 +82,7 @@ const PartnerDashboard = () => {
 
   const handlePost = async (e) => {
     e.preventDefault();
+    setPosting(true);
     try {
       await partnerAPI.postJob(form);
       setForm(emptyJob);
@@ -87,6 +91,8 @@ const PartnerDashboard = () => {
     } catch (err) {
       setMessage(err.response?.data?.message || 'Could not post the job');
     }
+    setPosting(false);
+    window.scrollTo(0, 0);
   };
 
   const handleClose = async (job) => {
@@ -137,7 +143,8 @@ const PartnerDashboard = () => {
       {message && <div className="pg-message">{message}</div>}
 
       <h3 className="pg-section-title">Applications ({allApps.filter(a => a.status === 'pending').length} waiting)</h3>
-      {allApps.length === 0 && <div className="pg-empty">No one has applied to your jobs yet. When a learner applies, it shows here.</div>}
+      {!loaded && <div className="pg-empty">Loading...</div>}
+      {loaded && allApps.length === 0 && <div className="pg-empty">No one has applied to your jobs yet. When a learner applies, it shows here.</div>}
       <div className="pg-grid">
         {allApps.map(a => (
           <div className="pg-item" key={a.id}>
@@ -155,6 +162,7 @@ const PartnerDashboard = () => {
         ))}
       </div>
 
+      <div className="pg-two">
       <div className="pg-card">
         <h3>Your company</h3>
         <p className="pg-muted">This is shown on your jobs. Fill it before you post.</p>
@@ -185,8 +193,9 @@ const PartnerDashboard = () => {
             Only learners with a certificate can apply
           </label>
           <textarea name="description" placeholder="What is the job about?" value={form.description} onChange={handleChange} />
-          <div><button className="pg-btn" type="submit">Post job</button></div>
+          <div><button className="pg-btn" type="submit" disabled={posting}>{posting ? 'Posting...' : 'Post job'}</button></div>
         </form>
+      </div>
       </div>
 
       <h3 className="pg-section-title">My jobs</h3>
