@@ -153,42 +153,7 @@
     }
   ],
   "mentorships": [],
-  "internships": [
-    {
-      "id": 1,
-      "title": "Web Developer Internship",
-      "description": "3-month web development internship",
-      "company": "Tech Company Ltd",
-      "duration": "3 months",
-      "location": "Kigali, Rwanda",
-      "salary": "$300/month",
-      "requirements": [
-        "JavaScript",
-        "React",
-        "HTML/CSS"
-      ],
-      "postedDate": "2025-11-15T10:00:00.000Z",
-      "status": "open",
-      "applicants": 0
-    },
-    {
-      "id": 2,
-      "title": "Backend Engineer Internship",
-      "description": "Learn backend development with Node.js and databases",
-      "company": "Tech Company Ltd",
-      "duration": "4 months",
-      "location": "Remote",
-      "salary": "$350/month",
-      "requirements": [
-        "Node.js",
-        "JavaScript",
-        "Database basics"
-      ],
-      "postedDate": "2025-11-14T09:30:00.000Z",
-      "status": "open",
-      "applicants": 0
-    }
-  ],
+  "internships": [],
   "applications": [],
   "progress": [],
   "certificates": [],
