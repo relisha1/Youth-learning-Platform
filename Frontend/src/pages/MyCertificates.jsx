@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { learnerAPI } from '../services/api';
+import { statusLabel, statusClass } from '../utils/status';
 import PageLayout from '../components/PageLayout';
 
 // shows the learner's certificates, projects and the jobs they applied for
@@ -8,6 +9,7 @@ const MyCertificates = () => {
   const [certificates, setCertificates] = useState([]);
   const [applications, setApplications] = useState([]);
   const [submissions, setSubmissions] = useState([]);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
@@ -25,6 +27,18 @@ const MyCertificates = () => {
     loadData();
   }, []);
 
+  // the student says if they really got the job
+  const handleConfirm = async (application, yes) => {
+    try {
+      const res = await learnerAPI.confirmHire(application.id, yes);
+      setMessage(res.data.message);
+      const appRes = await learnerAPI.getApplications();
+      setApplications(appRes.data.data);
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Something went wrong');
+    }
+  };
+
   // colour of the little status label
   const badgeClass = (status) => {
     if (status === 'approved' || status === 'accepted' || status === 'hired') return 'pg-badge pg-badge-green';
@@ -34,6 +48,8 @@ const MyCertificates = () => {
 
   return (
     <PageLayout title="My Certificates" subtitle="Give the code to an employer. They can check it on the Verify page.">
+      {message && <div className="pg-message">{message}</div>}
+
       <h3 className="pg-section-title">🏆 Certificates</h3>
       {certificates.length === 0 && (
         <div className="pg-empty">You have no certificates yet. Send a project and the facilitator will check it.</div>
@@ -72,7 +88,25 @@ const MyCertificates = () => {
           <div className="pg-item" key={a.id}>
             <h4>{a.jobTitle}</h4>
             <p>{a.company}</p>
-            <span className={badgeClass(a.status)}>{a.status}</span>
+            <span className={statusClass(a.status)}>{statusLabel(a.status)}</span>
+            {a.interviewNote && <p>📅 Interview: {a.interviewNote}</p>}
+
+            {(a.status === 'accepted' || a.status === 'hired') && (
+              <div className="pg-buttons">
+                <Link className="pg-btn pg-btn-light" to={'/application-chat/' + a.id}>Chat with the employer</Link>
+              </div>
+            )}
+
+            {a.status === 'hired' && a.hireConfirmed !== true && (
+              <div className="app-extra">
+                <p><strong>Did you get this job?</strong></p>
+                <div className="pg-buttons">
+                  <button className="pg-btn pg-btn-green" onClick={() => handleConfirm(a, true)}>Yes, I got it</button>
+                  <button className="pg-btn pg-btn-red" onClick={() => handleConfirm(a, false)}>No</button>
+                </div>
+              </div>
+            )}
+            {a.status === 'hired' && a.hireConfirmed === true && <p>✅ You confirmed this job. Congratulations!</p>}
           </div>
         ))}
       </div>
