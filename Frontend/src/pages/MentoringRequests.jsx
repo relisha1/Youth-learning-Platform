@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { mentorAPI } from '../services/api';
+import { Link } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
 
 // facilitators answer students who asked for mentoring and edit the profile students see
@@ -50,6 +51,7 @@ const MentoringRequests = () => {
   const badgeClass = (status) => {
     if (status === 'accepted') return 'pg-badge pg-badge-green';
     if (status === 'declined') return 'pg-badge pg-badge-red';
+    if (status === 'finished') return 'pg-badge';
     return 'pg-badge pg-badge-yellow';
   };
 
@@ -75,7 +77,9 @@ const MentoringRequests = () => {
             <h4>{r.studentName}</h4>
             <span className={badgeClass(r.status)}>{r.status}</span>
             {r.message && <p>{r.message}</p>}
-            {r.status === 'accepted' && <p>Email: {r.studentEmail}</p>}
+            {(r.status === 'accepted' || r.status === 'finished') && (
+              <div className="pg-buttons"><Link className="pg-btn" to={'/chat/' + r.id}>Open chat</Link></div>
+            )}
 
             {r.status === 'pending' && (
               <div className="pg-buttons">

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { learnerAPI } from '../services/api';
+import { Link } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
 
 // students look at the facilitators and ask one to be their mentor
@@ -41,6 +42,7 @@ const FindMentor = () => {
   const badgeClass = (status) => {
     if (status === 'accepted') return 'pg-badge pg-badge-green';
     if (status === 'declined') return 'pg-badge pg-badge-red';
+    if (status === 'finished') return 'pg-badge';
     return 'pg-badge pg-badge-yellow';
   };
 
@@ -89,7 +91,9 @@ const FindMentor = () => {
             <h4>{r.mentorName}</h4>
             <span className={badgeClass(r.status)}>{r.status}</span>
             {r.message && <p>Your message: {r.message}</p>}
-            {r.status === 'accepted' && <p>✅ You can write to your mentor at {r.mentorEmail}</p>}
+            {(r.status === 'accepted' || r.status === 'finished') && (
+              <div className="pg-buttons"><Link className="pg-btn" to={'/chat/' + r.id}>Open chat</Link></div>
+            )}
           </div>
         ))}
       </div>
