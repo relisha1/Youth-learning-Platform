@@ -482,6 +482,7 @@ const AdminDashboard = () => {
                         <select value={app.status} onChange={(e) => handleUpdateApplicationStatus(app.id, e.target.value)} className="status-select">
                           <option value="pending">Pending</option>
                           <option value="accepted">Accepted</option>
+                          <option value="hired">Hired</option>
                           <option value="rejected">Rejected</option>
                         </select>
                       </td>
@@ -528,6 +529,8 @@ const AdminDashboard = () => {
                   <div className="stat-card"><div className="stat-value">{report.jobs.applicantsWithCertificate}</div><div className="stat-label">Applicants with a certificate</div></div>
                   <div className="stat-card"><div className="stat-value">{report.jobs.accepted}</div><div className="stat-label">Accepted by employers</div></div>
                   <div className="stat-card"><div className="stat-value">{report.jobs.acceptedPercent}%</div><div className="stat-label">Accepted rate</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.hired}</div><div className="stat-label">Hired</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.hiredPercentOfCertified}%</div><div className="stat-label">Certified learners hired</div></div>
                 </div>
 
                 <h3>Mentoring</h3>

@@ -40,7 +40,9 @@ function buildReport() {
     totalDays += (new Date(s.checkedAt) - new Date(s.createdAt)) / (1000 * 60 * 60 * 24);
   });
 
-  const acceptedApps = applications.filter(a => a.status === 'accepted');
+  // accepted means the employer said yes, hired means the learner really got the job
+  const acceptedApps = applications.filter(a => a.status === 'accepted' || a.status === 'hired');
+  const hiredApps = applications.filter(a => a.status === 'hired');
   const certifiedIds = new Set(certificates.map(c => c.userId));
   const applicantsWithCertificate = new Set(
     applications.filter(a => certifiedIds.has(a.userId)).map(a => a.userId)
@@ -72,6 +74,9 @@ function buildReport() {
       learnersWhoApplied: countPeople(applications),
       applicantsWithCertificate,
       accepted: acceptedApps.length,
+      hired: hiredApps.length,
+      hiredLearners: countPeople(hiredApps),
+      hiredPercentOfCertified: percent(countPeople(hiredApps.filter(a => certifiedIds.has(a.userId))), certifiedIds.size),
       rejected: applications.filter(a => a.status === 'rejected').length,
       waiting: applications.filter(a => a.status === 'pending').length,
       acceptedPercent: percent(acceptedApps.length, applications.length)
@@ -105,7 +110,8 @@ function buildReport() {
       company: j.company,
       status: j.status || 'open',
       applications: apps.length,
-      accepted: apps.filter(a => a.status === 'accepted').length
+      accepted: apps.filter(a => a.status === 'accepted' || a.status === 'hired').length,
+      hired: apps.filter(a => a.status === 'hired').length
     };
   });
 
@@ -146,6 +152,7 @@ function reportToCsv(report) {
   report.jobList.forEach(j => {
     add('Job: ' + j.title + ' (' + j.company + ')', 'applications', j.applications);
     add('Job: ' + j.title + ' (' + j.company + ')', 'accepted', j.accepted);
+    add('Job: ' + j.title + ' (' + j.company + ')', 'hired', j.hired);
   });
   report.weeks.forEach(w => {
     add('Week ' + w.week, 'new learners', w.newLearners);
