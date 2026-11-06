@@ -27,9 +27,14 @@ router.post('/submit/:tutorialId', (req, res) => {
     return res.status(404).json({ success: false, message: 'Tutorial not found' });
   }
 
-  const { projectLink, notes } = req.body;
+  const { notes } = req.body;
+  const projectLink = req.body.projectLink ? String(req.body.projectLink).trim() : '';
   if (!projectLink) {
     return res.status(400).json({ success: false, message: 'Please add the link to your project' });
+  }
+  // only normal web links (for example a GitHub link), nothing like javascript:
+  if (!/^https?:\/\/\S+$/i.test(String(projectLink).trim())) {
+    return res.status(400).json({ success: false, message: 'The link must start with http:// or https://' });
   }
 
   // you can send a new one only if the old one was rejected
