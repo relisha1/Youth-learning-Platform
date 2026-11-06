@@ -37,6 +37,23 @@ People get a notification in the bell on the website when something happens (pro
 mentoring request, account approved). SMS and email are also sent if you add keys in `.env`
 (Africa's Talking for SMS, Resend for email). Without keys the website notifications still work.
 
+## Accounts and passwords
+- Everyone can edit their name, phone, skills and password on `/profile`.
+- "Forgot your password?" on the login page sends a reset link by email (it works for one hour).
+  Without email keys the link is printed in the backend window instead, so you can test it.
+- When email is on, new users get a link to confirm their email, and an admin cannot approve a facilitator
+  or employer before they confirmed it. Employers also must add their company website before posting a job.
+- Set `CLIENT_URL` in `.env` to the address of your website so the links in the emails are correct.
+
+## Chat, jobs and hiring
+- When a facilitator accepts a mentoring request, both people can talk on `/chat/ID`. The facilitator can finish the mentoring.
+- Students can search the jobs and filter them. Employers can search certified learners and send them a message.
+- An employer can accept an applicant and later mark them as **hired**. The report counts the hired learners.
+
+## Backups
+The server saves a copy of the database in `Backend/data/backups` every day and keeps the last 7.
+`npm run backup` makes one now, and the admin Report tab has a **Download database backup** button.
+
 ## Pilot report
 The admin page has a **Report** tab with the numbers for the pilot: learners, projects, approval rate,
 certificates, applications and accepted applicants, and a table per week. It can be downloaded as a CSV file for Excel.
@@ -84,6 +101,8 @@ and a facilitator), use a normal window for one and an incognito window for the 
 - `/find-mentor` - students ask a facilitator to be their mentor
 - `/facilitator` - facilitator page to check projects
 - `/mentoring` - facilitators answer mentoring requests and edit their profile
+- `/chat/ID` - chat between a student and their facilitator
+- `/profile` - edit your details and password
 - `/partner` - employer page
 - `/notifications` - what happened on your account
 - `/verify` - anyone can check a certificate code
