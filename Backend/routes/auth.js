@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { authMiddleware } = require('../middleware/auth');
 const rateLimit = require('../middleware/rateLimit');
+const { sendVerification } = require('./account');
 
 const router = express.Router();
 
@@ -62,6 +63,14 @@ router.post('/register', registerLimit, async (req, res) => {
       role: role || 'student',
       phone
     });
+
+    // ask the new user to confirm the email (never stops the registration)
+    try {
+      await sendVerification(req, user);
+      user.emailVerified = false;
+    } catch (err) {
+      console.error('Could not start email check:', err.message);
+    }
 
 
     // Generate JWT token (ensure secret is present)
@@ -174,7 +183,7 @@ router.post('/login', loginLimit, async (req, res) => {
     }
 
     // Remove password from user object
-    delete user.password;
+    User.clean(user);
 
     res.json({
       success: true,
@@ -227,12 +236,15 @@ router.put('/profile', authMiddleware, async (req, res) => {
   const { name, phone, bio, skills, interests, profileImage } = req.body;
 
     const updates = {};
-    if (name) updates.name = name;
-    if (phone) updates.phone = phone;
-  if (bio) updates.bio = bio;
-  if (skills) updates.skills = skills;
-  if (interests) updates.interests = interests;
-  if (profileImage) updates.profileImage = profileImage;
+    if (name) updates.name = String(name).trim();
+    if (phone !== undefined) updates.phone = String(phone).trim();
+    if (bio !== undefined) updates.bio = String(bio).slice(0, 500);
+    if (skills !== undefined) {
+      // skills can come as "C, Python" or as a list
+      updates.skills = Array.isArray(skills) ? skills : String(skills).split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (interests) updates.interests = interests;
+    if (profileImage) updates.profileImage = profileImage;
 
     const user = User.update(req.user.id, updates);
 

@@ -44,7 +44,7 @@ The settings are already in `fly.toml` and the `Dockerfile`.
    ```
 4. Set your secrets (use your own values; get a secret with `npm run secret` in the Backend folder):
    ```
-   fly secrets set JWT_SECRET=paste-the-long-secret ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=choose-a-strong-password
+   fly secrets set JWT_SECRET=paste-the-long-secret ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=choose-a-strong-password CLIENT_URL=https://your-app-name.fly.dev
    ```
 5. Put it online:
    ```
