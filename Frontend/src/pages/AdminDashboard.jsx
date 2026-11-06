@@ -492,13 +492,13 @@ const AdminDashboard = () => {
                     <tr key={app.id}>
                       <td>{app.learnerName || app.userId}</td>
                       <td>{(internships.find(job => job.id === app.internshipId) || {}).title || '-'}</td>
-                      <td>{app.status}</td>
+                      <td>{app.status === 'accepted' ? 'Shortlisted' : app.status === 'rejected' ? 'Not selected' : app.status === 'hired' ? 'Hired' : 'Applied'}</td>
                       <td>
                         <select value={app.status} onChange={(e) => handleUpdateApplicationStatus(app.id, e.target.value)} className="status-select">
-                          <option value="pending">Pending</option>
-                          <option value="accepted">Accepted</option>
+                          <option value="pending">Applied</option>
+                          <option value="accepted">Shortlisted</option>
                           <option value="hired">Hired</option>
-                          <option value="rejected">Rejected</option>
+                          <option value="rejected">Not selected</option>
                         </select>
                       </td>
                     </tr>
@@ -543,9 +543,11 @@ const AdminDashboard = () => {
                   <div className="stat-card"><div className="stat-value">{report.jobs.posted}</div><div className="stat-label">Jobs posted</div></div>
                   <div className="stat-card"><div className="stat-value">{report.jobs.applications}</div><div className="stat-label">Applications</div></div>
                   <div className="stat-card"><div className="stat-value">{report.jobs.applicantsWithCertificate}</div><div className="stat-label">Applicants with a certificate</div></div>
-                  <div className="stat-card"><div className="stat-value">{report.jobs.accepted}</div><div className="stat-label">Accepted by employers</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.accepted}</div><div className="stat-label">Shortlisted or hired</div></div>
                   <div className="stat-card"><div className="stat-value">{report.jobs.acceptedPercent}%</div><div className="stat-label">Accepted rate</div></div>
-                  <div className="stat-card"><div className="stat-value">{report.jobs.hired}</div><div className="stat-label">Hired</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.hired}</div><div className="stat-label">Hired (confirmed)</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.hiredWaitingConfirmation}</div><div className="stat-label">Hired, waiting for the learner</div></div>
+                  <div className="stat-card"><div className="stat-value">{report.jobs.employerRatingAverage}/5</div><div className="stat-label">Employer rating of {report.jobs.employerFeedbackCount} hired learners</div></div>
                   <div className="stat-card"><div className="stat-value">{report.jobs.hiredPercentOfCertified}%</div><div className="stat-label">Certified learners hired</div></div>
                 </div>
 
