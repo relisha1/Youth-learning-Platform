@@ -121,7 +121,8 @@ router.put('/requests/:id', (req, res) => {
 
   const updated = db.update('mentorships', request.id, { status });
   const text = status === 'accepted' ? 'accepted your mentoring request' : 'could not accept your mentoring request';
-  notify(request.studentId, 'Mentoring answer', request.mentorName + ' ' + text, '/find-mentor', true);
+  const link = status === 'accepted' ? '/chat/' + request.id : '/find-mentor';
+  notify(request.studentId, 'Mentoring answer', request.mentorName + ' ' + text, link, true);
   res.json({ success: true, message: 'Request ' + status, data: updated });
 });
 
