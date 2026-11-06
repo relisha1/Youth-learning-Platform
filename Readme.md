@@ -54,8 +54,9 @@ npm run dev
 Open http://localhost:3000
 
 ## Trying different roles
-The login is saved per browser tab. You can have the admin in one tab and a student in another tab
-at the same time. Closing a tab logs you out of that tab.
+The login stays saved in the browser (the token lasts 7 days). The admin page keeps its own login, so you can
+use `/admin` and another role in the same browser. To test two normal roles at the same time (for example a student
+and a facilitator), use a normal window for one and an incognito window for the other.
 
 ## Main pages
 - `/tutorials` - tutorials and the project for each one
