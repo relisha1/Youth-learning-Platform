@@ -180,6 +180,31 @@
   transform: translateX(5px);
 }
 
+/* hero text must stay white (other pages also use the class name description) */
+.hero .description, .hero .tagline {
+  color: white;
+}
+
+/* three cards per row so the last one is not alone */
+@media (min-width: 900px) {
+  .features-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.home-footer {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px;
+  background: #f8f9fa;
+  font-size: 0.9rem;
+}
+
+.home-footer a {
+  color: #666;
+}
+
 /* CTA Section */
 .cta-section {
   padding: 80px 20px;
