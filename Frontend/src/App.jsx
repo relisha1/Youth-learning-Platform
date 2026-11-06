@@ -17,6 +17,10 @@ import FindMentor from './pages/FindMentor';
 import MentoringRequests from './pages/MentoringRequests';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import Chat from './pages/Chat';
+import Profile from './pages/Profile';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail';
 import './App.css';
 
 function App() {
@@ -28,6 +32,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/verify" element={<Verify />} />
             <Route path="/certificate/:code" element={<Certificate />} />
             <Route path="/jobs" element={<PrivateRoute><Jobs /></PrivateRoute>} />
@@ -35,6 +42,7 @@ function App() {
             <Route path="/facilitator" element={<PrivateRoute><FacilitatorDashboard /></PrivateRoute>} />
             <Route path="/find-mentor" element={<PrivateRoute><FindMentor /></PrivateRoute>} />
             <Route path="/mentoring" element={<PrivateRoute><MentoringRequests /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/chat/:id" element={<PrivateRoute><Chat /></PrivateRoute>} />
             <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
             <Route path="/partner" element={<PrivateRoute><PartnerDashboard /></PrivateRoute>} />

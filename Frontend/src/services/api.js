@@ -37,6 +37,13 @@ export const authAPI = {
   changePassword: (passwords) => api.put('/auth/change-password', passwords),
 };
 
+export const accountAPI = {
+  forgot: (email) => api.post('/account/forgot', { email }),
+  reset: (token, password) => api.post('/account/reset', { token, password }),
+  verify: (token) => api.post('/account/verify', { token }),
+  resend: () => api.post('/account/resend'),
+};
+
 export const learnerAPI = {
   getProgress: () => api.get('/learner/progress'),
   submit: (tutorialId, projectLink, notes) => api.post(`/learner/submit/${tutorialId}`, { projectLink, notes }),
