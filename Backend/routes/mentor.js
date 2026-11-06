@@ -74,9 +74,9 @@ router.put('/submissions/:id', (req, res) => {
   }
 
   if (status === 'approved') {
-    notify(submission.userId, 'Project approved 🎉', 'Your ' + submission.tutorialTitle + ' project was approved. Your certificate code is ' + certificate.code, '/my-certificates');
+    notify(submission.userId, 'Project approved 🎉', 'Your ' + submission.tutorialTitle + ' project was approved. Your certificate code is ' + certificate.code, '/my-certificates', true);
   } else {
-    notify(submission.userId, 'Project needs changes', 'The facilitator asked for changes on your ' + submission.tutorialTitle + ' project: ' + feedback, '/tutorials');
+    notify(submission.userId, 'Project needs changes', 'The facilitator asked for changes on your ' + submission.tutorialTitle + ' project: ' + feedback, '/tutorials', true);
   }
 
   res.json({ success: true, message: 'Project ' + status, data: { submission: updated, certificate } });
@@ -121,7 +121,7 @@ router.put('/requests/:id', (req, res) => {
 
   const updated = db.update('mentorships', request.id, { status });
   const text = status === 'accepted' ? 'accepted your mentoring request' : 'could not accept your mentoring request';
-  notify(request.studentId, 'Mentoring answer', request.mentorName + ' ' + text, '/find-mentor');
+  notify(request.studentId, 'Mentoring answer', request.mentorName + ' ' + text, '/find-mentor', true);
   res.json({ success: true, message: 'Request ' + status, data: updated });
 });
 

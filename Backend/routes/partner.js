@@ -141,7 +141,7 @@ router.put('/applications/:id', (req, res) => {
 
   const updated = db.update('applications', application.id, { status });
   if (status === 'accepted' || status === 'rejected') {
-    notify(application.userId, 'Job application ' + status, 'Your application for ' + job.title + ' at ' + job.company + ' was ' + status, '/my-certificates');
+    notify(application.userId, 'Job application ' + status, 'Your application for ' + job.title + ' at ' + job.company + ' was ' + status, '/my-certificates', true);
   }
   res.json({ success: true, message: 'Application updated', data: updated });
 });
