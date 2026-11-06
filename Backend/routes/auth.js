@@ -67,7 +67,7 @@ router.post('/register', registerLimit, async (req, res) => {
     // ask the new user to confirm the email (never stops the registration)
     try {
       await sendVerification(req, user);
-      user.emailVerified = false;
+      user.emailVerified = User.findById(user.id).emailVerified;
     } catch (err) {
       console.error('Could not start email check:', err.message);
     }

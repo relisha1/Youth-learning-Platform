@@ -36,6 +36,12 @@ async function sendLink(email, subject, text, link) {
 
 // make a verification token for a user and email it
 async function sendVerification(req, user) {
+  // without email keys nobody can receive the link, so there is nothing to confirm
+  if (!emailIsOn()) {
+    db.update('users', user.id, { emailVerified: true });
+    return;
+  }
+
   const token = crypto.randomBytes(32).toString('hex');
   db.update('users', user.id, { emailVerified: false, verifyHash: hashToken(token) });
   await sendLink(
