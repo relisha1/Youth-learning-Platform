@@ -44,6 +44,7 @@ function App() {
             <Route path="/mentoring" element={<PrivateRoute><MentoringRequests /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/chat/:id" element={<PrivateRoute><Chat /></PrivateRoute>} />
+            <Route path="/application-chat/:id" element={<PrivateRoute><Chat kind="application" /></PrivateRoute>} />
             <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
             <Route path="/partner" element={<PrivateRoute><PartnerDashboard /></PrivateRoute>} />
             <Route 

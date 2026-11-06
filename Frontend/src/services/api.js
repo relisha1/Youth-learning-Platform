@@ -51,6 +51,7 @@ export const learnerAPI = {
   getCertificates: () => api.get('/learner/certificates'),
   apply: (jobId, message) => api.post(`/learner/apply/${jobId}`, { message }),
   getApplications: () => api.get('/learner/applications'),
+  confirmHire: (id, confirmed) => api.put(`/learner/applications/${id}/confirm`, { confirmed }),
   getMentors: () => api.get('/learner/mentors'),
   askMentor: (mentorId, message) => api.post(`/learner/mentorship/${mentorId}`, { message }),
   getMentorships: () => api.get('/learner/mentorships'),
@@ -62,8 +63,9 @@ export const notificationAPI = {
 };
 
 export const chatAPI = {
-  get: (id) => api.get(`/chat/${id}`),
-  send: (id, text) => api.post(`/chat/${id}`, { text }),
+  // kind is 'mentoring' (default) or 'application'
+  get: (id, kind) => api.get(kind === 'application' ? `/chat/application/${id}` : `/chat/${id}`),
+  send: (id, text, kind) => api.post(kind === 'application' ? `/chat/application/${id}` : `/chat/${id}`, { text }),
   finish: (id) => api.put(`/chat/${id}/finish`),
 };
 
@@ -86,6 +88,8 @@ export const partnerAPI = {
   getAllApplications: () => api.get('/partner/applications'),
   getApplicants: (id) => api.get(`/partner/jobs/${id}/applicants`),
   setStatus: (appId, status) => api.put(`/partner/applications/${appId}`, { status }),
+  setInterview: (appId, note) => api.put(`/partner/applications/${appId}/interview`, { note }),
+  sendFeedback: (appId, rating, comment) => api.post(`/partner/applications/${appId}/feedback`, { rating, comment }),
   getLearners: () => api.get('/partner/learners'),
   contactLearner: (id, message) => api.post(`/partner/learners/${id}/contact`, { message }),
 };

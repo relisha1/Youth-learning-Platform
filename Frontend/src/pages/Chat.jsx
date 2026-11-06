@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import PageLayout from '../components/PageLayout';
 
 // chat between a student and the facilitator who accepted to mentor them
-const Chat = () => {
+const Chat = ({ kind = 'mentoring' }) => {
   const { id } = useParams();
   const { user } = useAuth();
   const [mentoring, setMentoring] = useState(null);
@@ -16,7 +16,7 @@ const Chat = () => {
 
   const load = async () => {
     try {
-      const res = await chatAPI.get(id);
+      const res = await chatAPI.get(id, kind);
       setMentoring(res.data.data.mentoring);
       setMessages(res.data.data.messages);
     } catch (err) {
@@ -40,7 +40,7 @@ const Chat = () => {
     e.preventDefault();
     if (!text.trim()) return;
     try {
-      await chatAPI.send(id, text);
+      await chatAPI.send(id, text, kind);
       setText('');
       load();
     } catch (err) {
@@ -60,13 +60,18 @@ const Chat = () => {
 
   const iAmFacilitator = mentoring && String(mentoring.mentorId) === String(user?.id);
   const otherName = mentoring ? (iAmFacilitator ? mentoring.studentName : mentoring.mentorName) : '';
-  const backLink = iAmFacilitator ? '/mentoring' : '/find-mentor';
+  const isJob = kind === 'application';
+  const backLink = isJob ? (iAmFacilitator ? '/partner' : '/my-certificates') : (iAmFacilitator ? '/mentoring' : '/find-mentor');
   const finished = mentoring && mentoring.status === 'finished';
 
   return (
-    <PageLayout title={otherName ? 'Chat with ' + otherName : 'Chat'} subtitle="Mentoring conversation">
-      <p><Link to={backLink}>← Back</Link></p>
+    <PageLayout title={otherName ? 'Chat with ' + otherName : 'Chat'} subtitle={isJob ? (mentoring ? 'About: ' + mentoring.title : 'Job conversation') : 'Mentoring conversation'}>
+      <p className="chat-back"><Link to={backLink}>← Back</Link></p>
       {error && <div className="pg-message">{error}</div>}
+
+      {mentoring && isJob && mentoring.interviewNote && (
+        <div className="pg-message">📅 Interview: {mentoring.interviewNote}</div>
+      )}
 
       {mentoring && (
         <div className="pg-card">
@@ -95,7 +100,7 @@ const Chat = () => {
             </form>
           )}
 
-          {iAmFacilitator && !finished && (
+          {!isJob && iAmFacilitator && !finished && (
             <div className="chat-finish"><button className="pg-btn pg-btn-light" onClick={handleFinish}>Finish mentoring</button></div>
           )}
         </div>
