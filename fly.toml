@@ -1,0 +1,26 @@
+# Settings for hosting on Fly.io. Change the app name to your own (it must be unique).
+app = "youth-tech-hub"
+primary_region = "jnb"
+
+[build]
+
+[env]
+  PORT = "8080"
+  DB_PATH = "/data/youth-hub.db"
+
+# the volume keeps the database when the app restarts or is updated
+[mounts]
+  source = "data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
