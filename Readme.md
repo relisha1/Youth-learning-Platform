@@ -62,7 +62,9 @@ and a facilitator), use a normal window for one and an incognito window for the 
 - `/tutorials` - tutorials and the project for each one
 - `/my-certificates` - your certificates, projects and job applications
 - `/jobs` - open jobs, students can apply
+- `/find-mentor` - students ask a facilitator to be their mentor
 - `/facilitator` - facilitator page to check projects
+- `/mentoring` - facilitators answer mentoring requests and edit their profile
 - `/partner` - employer page
 - `/verify` - anyone can check a certificate code
 - `/admin` - admin page

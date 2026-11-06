@@ -40,11 +40,18 @@ export const learnerAPI = {
   getCertificates: () => api.get('/learner/certificates'),
   apply: (jobId, message) => api.post(`/learner/apply/${jobId}`, { message }),
   getApplications: () => api.get('/learner/applications'),
+  getMentors: () => api.get('/learner/mentors'),
+  askMentor: (mentorId, message) => api.post(`/learner/mentorship/${mentorId}`, { message }),
+  getMentorships: () => api.get('/learner/mentorships'),
 };
 
 export const mentorAPI = {
   getSubmissions: (status) => api.get('/mentor/submissions', { params: { status } }),
   review: (id, status, feedback) => api.put(`/mentor/submissions/${id}`, { status, feedback }),
+  getProfile: () => api.get('/mentor/profile'),
+  saveProfile: (profile) => api.put('/mentor/profile', profile),
+  getRequests: () => api.get('/mentor/requests'),
+  answerRequest: (id, status) => api.put(`/mentor/requests/${id}`, { status }),
 };
 
 export const partnerAPI = {

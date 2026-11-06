@@ -148,7 +148,7 @@ const Dashboard = () => {
                   <div className="feature-icon-large">👨‍🏫</div>
                   <h4>Find a Mentor</h4>
                   <p>Connect with expert mentors</p>
-                  <button className="btn-feature">Coming Soon</button>
+                  <button className="btn-feature" onClick={() => navigate('/find-mentor')}>Find Now</button>
                 </div>
 
                 <div className="feature-box">
@@ -174,6 +174,13 @@ const Dashboard = () => {
                   <h4>Check Projects</h4>
                   <p>Read the projects students sent. Approve them to give the certificate.</p>
                   <button className="btn-feature" onClick={() => navigate('/facilitator')}>Open</button>
+                </div>
+
+                <div className="feature-box">
+                  <div className="feature-icon-large">👥</div>
+                  <h4>Mentoring Requests</h4>
+                  <p>Answer students who want you as a mentor and edit your profile</p>
+                  <button className="btn-feature" onClick={() => navigate('/mentoring')}>Open</button>
                 </div>
 
                 <div className="feature-box">

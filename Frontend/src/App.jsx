@@ -12,6 +12,8 @@ import Jobs from './pages/Jobs';
 import MyCertificates from './pages/MyCertificates';
 import PartnerDashboard from './pages/PartnerDashboard';
 import Verify from './pages/Verify';
+import FindMentor from './pages/FindMentor';
+import MentoringRequests from './pages/MentoringRequests';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import './App.css';
 
@@ -29,6 +31,8 @@ function App() {
             <Route path="/jobs" element={<PrivateRoute><Jobs /></PrivateRoute>} />
             <Route path="/my-certificates" element={<PrivateRoute><MyCertificates /></PrivateRoute>} />
             <Route path="/facilitator" element={<PrivateRoute><FacilitatorDashboard /></PrivateRoute>} />
+            <Route path="/find-mentor" element={<PrivateRoute><FindMentor /></PrivateRoute>} />
+            <Route path="/mentoring" element={<PrivateRoute><MentoringRequests /></PrivateRoute>} />
             <Route path="/partner" element={<PrivateRoute><PartnerDashboard /></PrivateRoute>} />
             <Route 
               path="/dashboard" 
