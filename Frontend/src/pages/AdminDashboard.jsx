@@ -128,6 +128,21 @@ const AdminDashboard = () => {
     }
   };
 
+  // downloads a copy of the whole database (keep it somewhere safe)
+  const handleDownloadBackup = async () => {
+    try {
+      const res = await adminAPI.getBackup();
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'youth-hub-backup-' + new Date().toISOString().slice(0, 10) + '.db';
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Could not download the backup');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     setIsLoggedIn(false);
@@ -503,6 +518,7 @@ const AdminDashboard = () => {
               <div>
                 <p>Numbers made on {new Date(report.generatedAt).toLocaleString()}</p>
                 <button className="refresh-btn" onClick={handleDownloadReport}>Download as CSV (Excel)</button>
+                <button className="refresh-btn" onClick={handleDownloadBackup}>Download database backup</button>
 
                 <h3 style={{ marginTop: '24px' }}>People</h3>
                 <div className="stats-grid">

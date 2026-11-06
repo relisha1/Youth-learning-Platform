@@ -4,6 +4,7 @@ const db = require('../models/database');
 const { authMiddleware, isAdmin } = require('../middleware/auth');
 const { notify } = require('../services/notify');
 const { emailIsOn } = require('../services/messenger');
+const { makeBackup } = require('../services/backup');
 const { buildReport, reportToCsv } = require('../services/report');
 
 const router = express.Router();
@@ -388,6 +389,18 @@ router.get('/applications', (req, res) => {
       success: false,
       message: error.message
     });
+  }
+});
+
+// @route   GET /api/admin/backup
+// @desc    Download a copy of the whole database
+// @access  Private (Admin only)
+router.get('/backup', (req, res) => {
+  try {
+    const file = makeBackup();
+    res.download(file, 'youth-hub-backup.db');
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Could not make the backup' });
   }
 });
 

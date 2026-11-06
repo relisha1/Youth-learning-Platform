@@ -17,6 +17,8 @@ export const approveUser = (id, approved) => axios.put(`${API_URL}/admin/users/$
 export const getReport = () => axios.get(`${API_URL}/admin/report`, { headers: { ...authHeader() } });
 export const getReportCsv = () => axios.get(`${API_URL}/admin/report.csv`, { headers: { ...authHeader() }, responseType: 'blob' });
 
+export const getBackup = () => axios.get(`${API_URL}/admin/backup`, { headers: { ...authHeader() }, responseType: 'blob' });
+
 export const getTutorials = () => axios.get(`${API_URL}/admin/tutorials`, { headers: { ...authHeader() } });
 export const createTutorial = (data) => axios.post(`${API_URL}/admin/tutorials`, data, { headers: { ...authHeader() } });
 export const updateTutorial = (id, data) => axios.put(`${API_URL}/admin/tutorials/${id}`, data, { headers: { ...authHeader() } });
