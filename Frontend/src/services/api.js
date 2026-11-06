@@ -6,8 +6,14 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// The login is saved in two places:
+// - localStorage keeps you logged in when you close the tab or open a new one
+// - sessionStorage remembers who THIS tab is, so logging in as another user in another tab
+//   does not change the user of this tab
+const readSaved = (key) => sessionStorage.getItem(key) || localStorage.getItem(key);
+
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = readSaved('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -16,8 +22,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      logout();
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -76,15 +81,23 @@ export const publicAPI = {
   verify: (code) => api.get(`/public/verify/${code}`),
 };
 
-export const setAuthToken = (token) => localStorage.setItem('token', token);
-export const setUser = (user) => localStorage.setItem('user', JSON.stringify(user));
+export const setAuthToken = (token) => {
+  localStorage.setItem('token', token);
+  sessionStorage.setItem('token', token);
+};
+export const setUser = (user) => {
+  localStorage.setItem('user', JSON.stringify(user));
+  sessionStorage.setItem('user', JSON.stringify(user));
+};
 export const getUser = () => {
-  const user = localStorage.getItem('user');
+  const user = readSaved('user');
   return user ? JSON.parse(user) : null;
 };
-export const logout = () => {
+export function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-};
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('user');
+}
 
 export default api;
