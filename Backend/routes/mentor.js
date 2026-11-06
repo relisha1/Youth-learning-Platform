@@ -57,12 +57,16 @@ router.put('/submissions/:id', (req, res) => {
   // the certificate is only made here, after the facilitator says yes
   let certificate = null;
   if (status === 'approved') {
+    const tutorial = db.findById('tutorials', submission.tutorialId);
     certificate = db.insert('certificates', {
       code: makeCode(),
       userId: submission.userId,
       learnerName: submission.learnerName,
       tutorialId: submission.tutorialId,
       tutorialTitle: submission.tutorialTitle,
+      pathName: tutorial ? (tutorial.path || tutorial.category) : '',
+      skills: tutorial && tutorial.skills ? tutorial.skills : [],
+      projectLink: submission.projectLink,
       issuedBy: facilitator ? facilitator.name : '',
       issuedAt: new Date().toISOString()
     });
