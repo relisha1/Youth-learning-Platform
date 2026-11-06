@@ -143,9 +143,9 @@ router.get('/jobs/:id/applicants', (req, res) => {
 // PUT /api/partner/applications/:id - accept or reject an applicant
 router.put('/applications/:id', (req, res) => {
   const { status } = req.body;
-  const allowed = ['pending', 'accepted', 'rejected'];
+  const allowed = ['pending', 'accepted', 'rejected', 'hired'];
   if (!allowed.includes(status)) {
-    return res.status(400).json({ success: false, message: 'Status must be pending, accepted or rejected' });
+    return res.status(400).json({ success: false, message: 'Status must be pending, accepted, rejected or hired' });
   }
 
   const application = db.findById('applications', req.params.id);
@@ -160,8 +160,11 @@ router.put('/applications/:id', (req, res) => {
   }
 
   const updated = db.update('applications', application.id, { status });
-  if (status === 'accepted' || status === 'rejected') {
-    notify(application.userId, 'Job application ' + status, 'Your application for ' + job.title + ' at ' + job.company + ' was ' + status, '/my-certificates', true);
+  if (status === 'accepted' || status === 'rejected' || status === 'hired') {
+    const text = status === 'hired'
+      ? 'Congratulations! ' + job.company + ' chose you for ' + job.title
+      : 'Your application for ' + job.title + ' at ' + job.company + ' was ' + status;
+    notify(application.userId, 'Job application ' + status, text, '/my-certificates', true);
   }
   res.json({ success: true, message: 'Application updated', data: updated });
 });

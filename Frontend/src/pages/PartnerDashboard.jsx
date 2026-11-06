@@ -122,11 +122,12 @@ const PartnerDashboard = () => {
           <div className="pg-item" key={a.id}>
             <h4>{a.learnerName}</h4>
             <p>Applied for: {a.jobTitle}</p>
-            <span className={a.status === 'accepted' ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
+            <span className={(a.status === 'accepted' || a.status === 'hired') ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
             <p>{a.message}</p>
             <p>🏆 {a.certificates.length === 0 ? 'No certificates' : a.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
             <div className="pg-buttons">
               <button className="pg-btn pg-btn-green" onClick={() => handleStatus(a, 'accepted')}>Accept</button>
+              <button className="pg-btn" onClick={() => handleStatus(a, 'hired')}>Mark as hired</button>
               <button className="pg-btn pg-btn-red" onClick={() => handleStatus(a, 'rejected')}>Reject</button>
             </div>
           </div>
@@ -192,11 +193,12 @@ const PartnerDashboard = () => {
             {applicants.map(a => (
               <div className="pg-item" key={a.id}>
                 <h4>{a.learnerName}</h4>
-                <span className={a.status === 'accepted' ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
+                <span className={(a.status === 'accepted' || a.status === 'hired') ? 'pg-badge pg-badge-green' : a.status === 'rejected' ? 'pg-badge pg-badge-red' : 'pg-badge pg-badge-yellow'}>{a.status}</span>
                 <p>{a.message}</p>
                 <p>🏆 {a.certificates.length === 0 ? 'No certificates' : a.certificates.map(c => c.tutorialTitle + ' (' + c.code + ')').join(', ')}</p>
                 <div className="pg-buttons">
                   <button className="pg-btn pg-btn-green" onClick={() => handleStatus(a, 'accepted')}>Accept</button>
+                  <button className="pg-btn" onClick={() => handleStatus(a, 'hired')}>Mark as hired</button>
                   <button className="pg-btn pg-btn-red" onClick={() => handleStatus(a, 'rejected')}>Reject</button>
                 </div>
               </div>

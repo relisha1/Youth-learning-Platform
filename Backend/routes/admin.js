@@ -397,7 +397,7 @@ router.get('/applications', (req, res) => {
 router.put('/applications/:id/status', (req, res) => {
   try {
     const { status } = req.body;
-    const validStatuses = ['pending', 'accepted', 'rejected'];
+    const validStatuses = ['pending', 'accepted', 'rejected', 'hired'];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({

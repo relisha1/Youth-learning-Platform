@@ -27,7 +27,7 @@ const MyCertificates = () => {
 
   // colour of the little status label
   const badgeClass = (status) => {
-    if (status === 'approved' || status === 'accepted') return 'pg-badge pg-badge-green';
+    if (status === 'approved' || status === 'accepted' || status === 'hired') return 'pg-badge pg-badge-green';
     if (status === 'rejected') return 'pg-badge pg-badge-red';
     return 'pg-badge pg-badge-yellow';
   };
