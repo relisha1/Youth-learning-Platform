@@ -81,4 +81,80 @@ router.put('/:id/finish', (req, res) => {
   res.json({ success: true, data: updated });
 });
 
+// ---- chat for a job application (employer and learner) ----
+
+// finds the application and checks that I am the learner or the employer of that job
+const getApplication = (req, res) => {
+  const application = db.findById('applications', req.params.id);
+  const job = application ? db.findById('internships', application.internshipId) : null;
+  const isLearner = application && String(application.userId) === String(req.user.id);
+  const isEmployer = job && job.postedBy && String(job.postedBy) === String(req.user.id);
+
+  if (!application || !job || (!isLearner && !isEmployer)) {
+    res.status(404).json({ success: false, message: 'Application not found' });
+    return null;
+  }
+  // the chat opens when the employer shortlists the learner
+  if (application.status !== 'accepted' && application.status !== 'hired') {
+    res.status(400).json({ success: false, message: 'The chat opens when the employer shortlists the learner' });
+    return null;
+  }
+  return { application, job, isLearner };
+};
+
+// GET /api/chat/application/:id - the application and its messages
+router.get('/application/:id', (req, res) => {
+  const found = getApplication(req, res);
+  if (!found) return;
+  const { application, job } = found;
+
+  const messages = db.findMany('messages', { applicationId: application.id });
+  res.json({
+    success: true,
+    data: {
+      // same shape as the mentoring chat so one page can show both
+      mentoring: {
+        id: application.id,
+        status: 'accepted',
+        title: job.title,
+        studentId: application.userId,
+        studentName: application.learnerName,
+        mentorId: job.postedBy,
+        mentorName: job.company,
+        interviewNote: application.interviewNote || ''
+      },
+      messages
+    }
+  });
+});
+
+// POST /api/chat/application/:id - send a message
+router.post('/application/:id', (req, res) => {
+  const found = getApplication(req, res);
+  if (!found) return;
+  const { application, job, isLearner } = found;
+
+  const text = String(req.body.text || '').trim();
+  if (!text) {
+    return res.status(400).json({ success: false, message: 'Write a message first' });
+  }
+  if (text.length > 1000) {
+    return res.status(400).json({ success: false, message: 'Message is too long (1000 letters max)' });
+  }
+
+  const myName = isLearner ? application.learnerName : job.company;
+  const message = db.insert('messages', {
+    applicationId: application.id,
+    senderId: req.user.id,
+    senderName: myName,
+    text,
+    createdAt: new Date().toISOString()
+  });
+
+  const otherId = isLearner ? job.postedBy : application.userId;
+  notify(otherId, 'New message', myName + ' sent you a message about ' + job.title, '/application-chat/' + application.id);
+
+  res.status(201).json({ success: true, data: message });
+});
+
 module.exports = router;
