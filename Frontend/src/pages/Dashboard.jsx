@@ -218,7 +218,6 @@ const Dashboard = () => {
           <div className="user-info-card">
             <p><strong>Email:</strong> {user?.email}</p>
             <p><strong>Phone:</strong> {user?.phone || 'Not provided'}</p>
-            <p><strong>Language:</strong> {user?.language === 'en' ? 'English' : 'Kinyarwanda'}</p>
             <p><strong>Member since:</strong> {new Date(user?.createdAt).toLocaleDateString()}</p>
           </div>
         </div>

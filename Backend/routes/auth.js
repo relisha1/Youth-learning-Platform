@@ -10,7 +10,7 @@ const router = express.Router();
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
-  const { name, email, password, role, phone, language } = req.body;
+  const { name, email, password, role, phone } = req.body;
 
     // Validate input
     if (!name || !email || !password) {
@@ -55,8 +55,7 @@ router.post('/register', async (req, res) => {
       email,
       password,
       role: role || 'student',
-      phone,
-      language: language || 'en'
+      phone
     });
 
 
@@ -220,7 +219,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 // @access  Private
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-  const { name, phone, bio, skills, interests, language, profileImage } = req.body;
+  const { name, phone, bio, skills, interests, profileImage } = req.body;
 
     const updates = {};
     if (name) updates.name = name;
@@ -228,7 +227,6 @@ router.put('/profile', authMiddleware, async (req, res) => {
   if (bio) updates.bio = bio;
   if (skills) updates.skills = skills;
   if (interests) updates.interests = interests;
-  if (language) updates.language = language;
   if (profileImage) updates.profileImage = profileImage;
 
     const user = User.update(req.user.id, updates);

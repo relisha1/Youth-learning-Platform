@@ -33,7 +33,6 @@ if (db.count('users') === 0 && process.env.ADMIN_EMAIL && process.env.ADMIN_PASS
     password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
     role: 'admin',
     phone: '',
-    language: 'en',
     skills: [],
     interests: [],
     bio: '',

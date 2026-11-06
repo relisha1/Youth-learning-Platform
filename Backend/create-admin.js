@@ -11,7 +11,7 @@ async function createAdminUser() {
   }
 
   try {
-    await User.create({ name: 'Admin', email, password, role: 'admin', language: 'en' });
+    await User.create({ name: 'Admin', email, password, role: 'admin' });
     console.log('Admin created for', email);
     process.exit(0);
   } catch (error) {
