@@ -52,6 +52,10 @@ router.post('/jobs', (req, res) => {
   // if no company name is typed we use the one from my company info
   const company = req.body.company || me.companyName;
 
+  if (!me.website) {
+    return res.status(400).json({ success: false, message: 'Add your company website in Your company before you post' });
+  }
+
   if (!title || !company || !description) {
     return res.status(400).json({
       success: false,

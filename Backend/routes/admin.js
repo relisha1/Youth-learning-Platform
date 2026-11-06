@@ -3,6 +3,7 @@ const User = require('../models/User');
 const db = require('../models/database');
 const { authMiddleware, isAdmin } = require('../middleware/auth');
 const { notify } = require('../services/notify');
+const { emailIsOn } = require('../services/messenger');
 const { buildReport, reportToCsv } = require('../services/report');
 
 const router = express.Router();
@@ -106,6 +107,9 @@ router.put('/users/:id/approve', (req, res) => {
     return res.status(404).json({ success: false, message: 'User not found' });
   }
   const approved = req.body.approved !== false;
+  if (approved && emailIsOn() && user.emailVerified === false) {
+    return res.status(400).json({ success: false, message: 'This user has not confirmed their email yet' });
+  }
   db.update('users', user.id, { approved });
   if (approved) {
     notify(user.id, 'Account approved', 'An admin approved your account. You can now use your page.', '/dashboard', true);
