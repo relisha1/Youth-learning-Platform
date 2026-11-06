@@ -334,3 +334,35 @@ a.pg-btn {
 .chat-form { display: flex; gap: 8px; }
 .chat-form input { flex: 1; padding: 10px; border: 1px solid #ccd2de; border-radius: 6px; }
 .chat-finish { margin-top: 12px; }
+
+/* search box above a list */
+.pg-search {
+  width: 100%;
+  max-width: 460px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccd2de;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.pg-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.pg-filters .pg-search {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 220px;
+}
+
+.pg-filters select {
+  padding: 10px;
+  border: 1px solid #ccd2de;
+  border-radius: 8px;
+  font-size: 1rem;
+}
