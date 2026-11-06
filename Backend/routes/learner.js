@@ -124,6 +124,9 @@ router.post('/apply/:jobId', (req, res) => {
   if (!job) {
     return res.status(404).json({ success: false, message: 'Job not found' });
   }
+  if (!job.postedBy) {
+    return res.status(400).json({ success: false, message: 'This job has no employer yet' });
+  }
   if (job.status === 'closed') {
     return res.status(400).json({ success: false, message: 'This job is closed' });
   }

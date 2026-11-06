@@ -51,7 +51,8 @@ router.get('/tutorials/:id', (req, res) => {
 // @access  Public
 router.get('/internships', (req, res) => {
   try {
-    const internships = db.getAll('internships');
+    // jobs without an employer (old sample jobs) are hidden because nobody could read the applications
+    const internships = db.getAll('internships').filter(job => job.postedBy);
     res.json({
       success: true,
       data: internships,
