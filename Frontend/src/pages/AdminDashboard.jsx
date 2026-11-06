@@ -17,7 +17,7 @@ const AdminDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
-  const [newTutorial, setNewTutorial] = useState({ title: '', description: '', category: '', level: 'beginner' });
+  const [newTutorial, setNewTutorial] = useState({ title: '', description: '', category: '', content: '', projectBrief: '', level: 'beginner' });
   const [newInternship, setNewInternship] = useState({ title: '', description: '', company: '', duration: '' });
 
   // Helper: fetch all admin data in parallel
@@ -147,7 +147,7 @@ const AdminDashboard = () => {
       }
       try {
         await adminAPI.createTutorial(newTutorial);
-        setNewTutorial({ title: '', description: '', category: '', level: 'beginner' });
+        setNewTutorial({ title: '', description: '', category: '', content: '', projectBrief: '', level: 'beginner' });
         await loadData();
         alert('Tutorial added successfully!');
       } catch (err) {
@@ -327,6 +327,8 @@ const AdminDashboard = () => {
               <h3>Add New Tutorial</h3>
               <input type="text" placeholder="Title" value={newTutorial.title} onChange={(e) => setNewTutorial({...newTutorial, title: e.target.value})} className="form-input" />
               <textarea placeholder="Description" value={newTutorial.description} onChange={(e) => setNewTutorial({...newTutorial, description: e.target.value})} className="form-input" />
+              <textarea placeholder="Lesson content" value={newTutorial.content} onChange={(e) => setNewTutorial({...newTutorial, content: e.target.value})} className="form-input" />
+              <textarea placeholder="Project the student must do (the facilitator will check it)" value={newTutorial.projectBrief} onChange={(e) => setNewTutorial({...newTutorial, projectBrief: e.target.value})} className="form-input" />
               <input type="text" placeholder="Category" value={newTutorial.category} onChange={(e) => setNewTutorial({...newTutorial, category: e.target.value})} className="form-input" />
               <select value={newTutorial.level} onChange={(e) => setNewTutorial({...newTutorial, level: e.target.value})} className="form-input">
                 <option value="beginner">Beginner</option>
