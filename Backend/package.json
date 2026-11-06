@@ -7,6 +7,9 @@
     "dev": "node server.js",
     "secret": "node generate-secret.js"
   },
+  "engines": {
+    "node": ">=22.13"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -10,3 +10,7 @@ Backend/data/database.json.bak
 Backend/results/
 Backend/dev_admin_token.txt
 Backend/hash.txt
+
+Backend/data/*.db
+Backend/data/*.db-wal
+Backend/data/*.db-shm

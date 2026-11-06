@@ -94,14 +94,13 @@ router.get('/internships/:id', (req, res) => {
 // @access  Public
 router.get('/stats', (req, res) => {
   try {
-    const data = db.readData();
     res.json({
       success: true,
       data: {
-        totalUsers: data.users ? data.users.length : 0,
-        totalTutorials: data.tutorials ? data.tutorials.length : 0,
-        totalInternships: data.internships ? data.internships.length : 0,
-        totalApplications: data.applications ? data.applications.length : 0
+        totalUsers: db.count('users'),
+        totalTutorials: db.count('tutorials'),
+        totalInternships: db.count('internships'),
+        totalApplications: db.count('applications')
       }
     });
   } catch (error) {
