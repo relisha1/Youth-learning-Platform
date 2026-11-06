@@ -42,7 +42,11 @@ function buildReport() {
 
   // accepted means the employer said yes, hired means the learner really got the job
   const acceptedApps = applications.filter(a => a.status === 'accepted' || a.status === 'hired');
-  const hiredApps = applications.filter(a => a.status === 'hired');
+  // only hires that the learner confirmed are counted
+  const hiredApps = applications.filter(a => a.status === 'hired' && a.hireConfirmed === true);
+  const hiredWaiting = applications.filter(a => a.status === 'hired' && a.hireConfirmed !== true);
+  const rated = applications.filter(a => a.feedback && a.feedback.rating);
+  const ratingTotal = rated.reduce((sum, a) => sum + a.feedback.rating, 0);
   const certifiedIds = new Set(certificates.map(c => c.userId));
   const applicantsWithCertificate = new Set(
     applications.filter(a => certifiedIds.has(a.userId)).map(a => a.userId)
@@ -75,6 +79,9 @@ function buildReport() {
       applicantsWithCertificate,
       accepted: acceptedApps.length,
       hired: hiredApps.length,
+      hiredWaitingConfirmation: hiredWaiting.length,
+      employerFeedbackCount: rated.length,
+      employerRatingAverage: rated.length === 0 ? 0 : Math.round((ratingTotal / rated.length) * 10) / 10,
       hiredLearners: countPeople(hiredApps),
       hiredPercentOfCertified: percent(countPeople(hiredApps.filter(a => certifiedIds.has(a.userId))), certifiedIds.size),
       rejected: applications.filter(a => a.status === 'rejected').length,
@@ -111,7 +118,7 @@ function buildReport() {
       status: j.status || 'open',
       applications: apps.length,
       accepted: apps.filter(a => a.status === 'accepted' || a.status === 'hired').length,
-      hired: apps.filter(a => a.status === 'hired').length
+      hired: apps.filter(a => a.status === 'hired' && a.hireConfirmed === true).length
     };
   });
 

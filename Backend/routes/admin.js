@@ -419,7 +419,8 @@ router.put('/applications/:id/status', (req, res) => {
       });
     }
 
-    db.update('applications', req.params.id, { status });
+    // an admin sets the status after checking, so a hire set here counts as confirmed
+    db.update('applications', req.params.id, { status, hireConfirmed: status === 'hired' ? true : null });
     const updatedApp = db.findById('applications', req.params.id);
 
     res.json({

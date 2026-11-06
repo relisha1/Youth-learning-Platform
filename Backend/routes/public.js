@@ -102,7 +102,7 @@ router.get('/stats', (req, res) => {
         facilitators: db.findMany('users', { role: 'mentor' }).filter(u => u.approved !== false).length,
         certificates: db.count('certificates'),
         openJobs: db.getAll('internships').filter(j => j.postedBy && j.status !== 'closed').length,
-        hired: db.findMany('applications', { status: 'hired' }).length
+        hired: db.findMany('applications', { status: 'hired' }).filter(a => a.hireConfirmed === true).length
       }
     });
   } catch (error) {

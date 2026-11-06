@@ -183,4 +183,31 @@ router.get('/applications', (req, res) => {
   res.json({ success: true, data: list });
 });
 
+// PUT /api/learner/applications/:id/confirm - say if I really got the job
+router.put('/applications/:id/confirm', (req, res) => {
+  const application = db.findById('applications', req.params.id);
+  if (!application || String(application.userId) !== String(req.user.id)) {
+    return res.status(404).json({ success: false, message: 'Application not found' });
+  }
+  if (application.status !== 'hired' || application.hireConfirmed !== null && application.hireConfirmed !== undefined) {
+    return res.status(400).json({ success: false, message: 'There is nothing to confirm here' });
+  }
+
+  const job = db.findById('internships', application.internshipId);
+  const yes = req.body.confirmed === true;
+
+  // if the learner says no, the hire is cancelled and the learner goes back to shortlisted
+  const updated = yes
+    ? db.update('applications', application.id, { hireConfirmed: true })
+    : db.update('applications', application.id, { status: 'accepted', hireConfirmed: false });
+
+  if (job && job.postedBy) {
+    const text = yes
+      ? application.learnerName + ' confirmed that they got ' + job.title + '. You can now give feedback.'
+      : application.learnerName + ' says they did not get ' + job.title + '. Please check.';
+    notify(job.postedBy, yes ? 'Hire confirmed' : 'Hire not confirmed', text, '/partner');
+  }
+  res.json({ success: true, message: yes ? 'Thank you, congratulations!' : 'Okay, we noted it', data: updated });
+});
+
 module.exports = router;
