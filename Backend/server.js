@@ -15,6 +15,7 @@ const mentorRoutes = require('./routes/mentor');
 const notificationRoutes = require('./routes/notifications');
 const chatRoutes = require('./routes/chat');
 const accountRoutes = require('./routes/account');
+const { startBackups } = require('./services/backup');
 const db = require('./models/database');
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || process.env.JWT_SECRET.startsWith('change')) {
@@ -82,6 +83,9 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
+  startBackups();
+});
 
 module.exports = app;

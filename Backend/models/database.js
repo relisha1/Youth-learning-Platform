@@ -47,6 +47,13 @@ class Database {
     this.addSampleData();
   }
 
+  // make a safe copy of the whole database in one file
+  copyTo(filePath) {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    const safePath = filePath.replace(/'/g, "''");
+    this.db.exec(`VACUUM INTO '${safePath}'`);
+  }
+
   // if the old database.json is next to the new file, copy its data in once
   importOldJson() {
     const oldPath = path.join(path.dirname(this.dbPath), 'database.json');

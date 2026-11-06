@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "secret": "node generate-secret.js"
+    "secret": "node generate-secret.js",
+    "backup": "node backup.js"
   },
   "engines": {
     "node": ">=22.13"

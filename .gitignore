@@ -14,3 +14,4 @@ Backend/hash.txt
 Backend/data/*.db
 Backend/data/*.db-wal
 Backend/data/*.db-shm
+Backend/data/backups/
