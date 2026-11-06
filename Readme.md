@@ -53,6 +53,10 @@ npm run dev
 ```
 Open http://localhost:3000
 
+## Trying different roles
+The login is saved per browser tab. You can have the admin in one tab and a student in another tab
+at the same time. Closing a tab logs you out of that tab.
+
 ## Main pages
 - `/tutorials` - tutorials and the project for each one
 - `/my-certificates` - your certificates, projects and job applications
