@@ -2,13 +2,18 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { authMiddleware } = require('../middleware/auth');
+const rateLimit = require('../middleware/rateLimit');
 
 const router = express.Router();
+
+// 10 login tries and 20 new accounts every 15 minutes from the same address
+const loginLimit = rateLimit(10, 15);
+const registerLimit = rateLimit(20, 15);
 
 // @route   POST /api/auth/register
 // @desc    Register new user
 // @access  Public
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimit, async (req, res) => {
   try {
   const { name, email, password, role, phone } = req.body;
 
@@ -107,7 +112,7 @@ router.post('/register', async (req, res) => {
 // @route   POST /api/auth/login
 // @desc    Login user
 // @access  Public
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimit, async (req, res) => {
   try {
     const { email, password } = req.body;
 
