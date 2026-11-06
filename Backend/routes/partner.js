@@ -104,6 +104,22 @@ router.delete('/jobs/:id', (req, res) => {
   res.json({ success: true, message: 'Job deleted' });
 });
 
+// GET /api/partner/applications - applications for all my jobs, newest first
+router.get('/applications', (req, res) => {
+  const myJobs = db.findMany('internships', { postedBy: req.user.id });
+  const list = [];
+
+  myJobs.forEach(job => {
+    db.findMany('applications', { internshipId: job.id }).forEach(a => {
+      const certificates = db.findMany('certificates', { userId: a.userId });
+      list.push({ ...a, jobTitle: job.title, certificates });
+    });
+  });
+
+  list.sort((a, b) => b.id - a.id);
+  res.json({ success: true, data: list });
+});
+
 // GET /api/partner/jobs/:id/applicants - people who applied, with their certificates
 router.get('/jobs/:id/applicants', (req, res) => {
   const job = getMyJob(req);
